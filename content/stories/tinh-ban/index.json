@@ -1,0 +1,19 @@
+{
+  "category": "tinh-ban",
+  "title": "Tình bạn",
+  "description": "Các câu chuyện về cách kết bạn, duy trì tình bạn và giải quyết xung đột",
+  "stories": [
+    {
+      "type": "story",
+      "title": "Chia sẻ chiếc bút",
+      "description": "Một câu chuyện nhỏ về biết chia sẻ với bạn",
+      "content": "Lan quên bút, Minh đã cho mượn chiếc bút yêu thích. Lan cám ơn và hôm sau mang trả kèm một lá thư nhỏ. Từ đó hai bạn càng thân hơn."
+    },
+    {
+      "type": "video",
+      "title": "Nói lời xin lỗi thế nào?",
+      "description": "Video ngắn dạy trẻ xin lỗi đúng cách",
+      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    }
+  ]
+}

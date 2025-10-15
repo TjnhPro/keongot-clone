@@ -1,0 +1,13 @@
+{
+  "category": "tu-lap",
+  "title": "Tự lập",
+  "description": "Các câu chuyện khuyến khích trẻ tự làm những việc phù hợp với lứa tuổi",
+  "stories": [
+    {
+      "type": "story",
+      "title": "Tự dọn góc học tập",
+      "description": "Tập thói quen tự sắp xếp ngăn nắp",
+      "content": "Mỗi chiều, tớ dành 10 phút xếp lại sách vở. Bàn sạch hơn, tớ học tập trung hơn và thấy mình lớn thêm một chút!"
+    }
+  ]
+}

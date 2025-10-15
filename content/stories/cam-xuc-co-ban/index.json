@@ -1,0 +1,19 @@
+{
+  "category": "cam-xuc-co-ban",
+  "title": "Cảm xúc cơ bản",
+  "description": "Các câu chuyện giúp trẻ nhận biết và quản lý cảm xúc của mình",
+  "stories": [
+    {
+      "type": "story",
+      "title": "Tớ đang cảm thấy gì?",
+      "description": "Nhận biết cảm xúc qua một ngày ở lớp học",
+      "content": "Sáng nay, khi vào lớp, tớ thấy hồi hộp. Khi cô khen bài vẽ, tớ thấy vui. Trưa cãi nhau với bạn, tớ thấy buồn và tức giận. Cô dạy tớ hít thở sâu và nói lời xin lỗi. Chiều về nhà, tớ thấy nhẹ nhõm và tự hào vì đã dũng cảm nói xin lỗi."
+    },
+    {
+      "type": "video",
+      "title": "Hít thở 4-4 để bình tĩnh",
+      "description": "Hướng dẫn ngắn giúp bình tĩnh khi căng thẳng",
+      "url": "https://www.youtube.com/watch?v=2Z3ZKp_g9W8"
+    }
+  ]
+}

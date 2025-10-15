@@ -1,0 +1,9 @@
+{
+  "categories": [
+    { "id": "tro-choi", "title": "Trò chơi", "items": [] },
+    { "id": "ve-tranh", "title": "Vẽ tranh", "items": [] },
+    { "id": "am-nhac", "title": "Âm nhạc", "items": [] }
+  ]
+}
+
+

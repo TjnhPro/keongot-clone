@@ -1,0 +1,13 @@
+{
+  "category": "chia-se",
+  "title": "Sự chia sẻ",
+  "description": "Các câu chuyện về tầm quan trọng của việc chia sẻ và giúp đỡ người khác",
+  "stories": [
+    {
+      "type": "story",
+      "title": "Chia đôi chiếc bánh",
+      "description": "Niềm vui khi biết chia sẻ",
+      "content": "Trong giờ ra chơi, tớ chia đôi chiếc bánh với bạn mới chuyển lớp. Bạn cười rất tươi và hai đứa trở thành bạn thân."
+    }
+  ]
+}

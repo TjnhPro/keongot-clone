@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bảng vẽ đơn giản</title>
+    <style>
+        :root { --bg:#fff; --line:#111827; --accent:#ff8c42; }
+        html,body{height:100%;margin:0}
+        body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:var(--bg)}
+        .toolbar{display:flex;gap:10px;align-items:center;padding:10px;border-bottom:1px solid #eee;position:sticky;top:0;background:#fff;z-index:2}
+        .toolbar input[type=color]{width:36px;height:36px;border:none;padding:0;background:transparent}
+        .toolbar button{padding:8px 14px;border-radius:999px;border:2px solid var(--accent);background:#fff;color:var(--accent);font-weight:700;cursor:pointer}
+        .toolbar button.primary{background:linear-gradient(135deg,#ff8c42,#ff6b9d);color:#fff;border-color:transparent}
+        .wrap{display:grid;place-items:center;padding:12px}
+        canvas{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.06);touch-action:none}
+        .hint{font-size:14px;color:#6b7280;padding:6px 12px}
+    </style>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const canvas = document.getElementById('c');
+        const ctx = canvas.getContext('2d');
+        const color = document.getElementById('color');
+        const size = document.getElementById('size');
+        const clearBtn = document.getElementById('clear');
+        const saveBtn = document.getElementById('save');
+
+        let drawing = false; let prevX = 0, prevY = 0;
+        function pos(e){ const r = canvas.getBoundingClientRect();
+            const x = (e.touches?e.touches[0].clientX:e.clientX) - r.left;
+            const y = (e.touches?e.touches[0].clientY:e.clientY) - r.top; return {x,y}; }
+
+        function start(e){ drawing = true; const p = pos(e); prevX=p.x; prevY=p.y; }
+        function move(e){ if(!drawing) return; const p = pos(e);
+            ctx.strokeStyle = color.value; ctx.lineWidth = +size.value; ctx.lineCap='round'; ctx.lineJoin='round';
+            ctx.beginPath(); ctx.moveTo(prevX, prevY); ctx.lineTo(p.x, p.y); ctx.stroke(); prevX=p.x; prevY=p.y; }
+        function end(){ drawing=false; }
+
+        canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', move); window.addEventListener('mouseup', end);
+        canvas.addEventListener('touchstart', start, {passive:false}); canvas.addEventListener('touchmove', (e)=>{e.preventDefault(); move(e);}, {passive:false}); window.addEventListener('touchend', end);
+
+        clearBtn.addEventListener('click', ()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); });
+        saveBtn.addEventListener('click', ()=>{ const a=document.createElement('a'); a.href=canvas.toDataURL('image/png'); a.download='banh-ve.png'; a.click(); });
+    });
+    </script>
+</head>
+<body>
+    <div class="toolbar">
+        <label>Màu: <input type="color" id="color" value="#ff8c42"></label>
+        <label>Độ dày: <input type="range" id="size" min="2" max="30" value="8"></label>
+        <button id="clear">Xóa trắng</button>
+        <button class="primary" id="save">Lưu ảnh</button>
+        <span class="hint">Vẽ bằng chuột, hoặc chạm kéo trên màn hình cảm ứng</span>
+    </div>
+    <div class="wrap">
+        <canvas id="c" width="900" height="520"></canvas>
+    </div>
+</body>
+</html>
+
+

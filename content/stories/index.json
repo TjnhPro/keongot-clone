@@ -1,0 +1,31 @@
+{
+  "categories": [
+    {
+      "id": "chia-se",
+      "title": "Sự chia sẻ",
+      "items": []
+    },
+    {
+      "id": "tu-lap",
+      "title": "Tự lập",
+      "items": []
+    },
+    {
+      "id": "tinh-ban",
+      "title": "Tình bạn",
+      "items": []
+    },
+    {
+      "id": "gia-dinh",
+      "title": "Gia đình",
+      "items": []
+    },
+    {
+      "id": "cam-xuc-co-ban",
+      "title": "Cảm xúc cơ bản",
+      "items": []
+    }
+  ]
+}
+
+

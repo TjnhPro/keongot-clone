@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "public": true,
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "builds": [
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "dong-hanh.html", "use": "@vercel/static" },
+    { "src": "kham-pha.html", "use": "@vercel/static" },
+    { "src": "tam-su.html", "use": "@vercel/static" },
+    { "src": "thu-gian.html", "use": "@vercel/static" },
+    { "src": "apps/draw/index.html", "use": "@vercel/static" },
+    { "src": "assets/**", "use": "@vercel/static" },
+    { "src": "content/**", "use": "@vercel/static" }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)\\.(css|js|png|jpg|jpeg|svg|webp|mp3|mp4)$",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    }
+  ]
+}
+
+

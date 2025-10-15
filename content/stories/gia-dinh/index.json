@@ -1,0 +1,13 @@
+{
+  "category": "gia-dinh",
+  "title": "Gia đình",
+  "description": "Các câu chuyện về tình yêu thương và sự gắn kết trong gia đình",
+  "stories": [
+    {
+      "type": "story",
+      "title": "Bữa cơm tối ấm áp",
+      "description": "Cùng chuẩn bị bữa tối giúp cả nhà gắn kết",
+      "content": "Tối nay, tớ rửa rau, bố nấu canh, mẹ làm món trứng. Cả nhà vừa ăn vừa kể chuyện trong ngày. Tớ thấy gia đình thật ấm áp."
+    }
+  ]
+}
