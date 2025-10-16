@@ -1,7 +1,7 @@
 // Kham Pha Interactive Features
 console.log('Kham Pha JS loaded!');
 
-document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener('DOMContentLoaded', function () {
     const video = document.getElementById('musicPlayer');
 
     // Handle video buttons on kham-pha page
@@ -35,19 +35,19 @@ class UserProgress {
     }
 
     initData() {
-            const defaultData = {
-                currentPoints: 0,
-                badges: [],
-                level: 1,
+        const defaultData = {
+            currentPoints: 0,
+            badges: [],
+            level: 1,
             completedQuestionSets: 0,
-                readStories: [],
-                weeklyProgress: 0,
+            readStories: [],
+            weeklyProgress: 0,
             questionSetScores: [null, null, null, null, null],
-                totalStoriesRead: 0,
+            totalStoriesRead: 0,
             totalQuestionSetsCompleted: 0,
-                averageScore: 0,
-                lastActivity: new Date().toISOString()
-            };
+            averageScore: 0,
+            lastActivity: new Date().toISOString()
+        };
 
         const existing = localStorage.getItem(this.storageKey);
         if (!existing) {
@@ -99,7 +99,7 @@ class UserProgress {
         const data = this.getData();
         const newPoints = data.currentPoints + points;
         const newLevel = Math.floor(newPoints / 500) + 1;
-        this.updateData({ 
+        this.updateData({
             currentPoints: newPoints,
             level: newLevel
         });
@@ -108,36 +108,36 @@ class UserProgress {
     addBadge(badgeId) {
         const data = this.getData();
         if (!data.badges.includes(badgeId)) {
-            this.updateData({ 
+            this.updateData({
                 badges: [...data.badges, badgeId]
             });
-            
+
             // Add special unlock animation
             this.showBadgeUnlockAnimation(badgeId);
         }
     }
-    
+
     showBadgeUnlockAnimation(badgeId) {
         // Find the badge element
         const badgeElement = document.querySelector(`[data-badge="${badgeId}"]`);
         if (badgeElement) {
             // Add celebration effect
             badgeElement.classList.add('badge-unlock-celebration');
-            
+
             // Create confetti effect
             this.createConfettiEffect(badgeElement);
-            
+
             // Remove celebration class after animation
             setTimeout(() => {
                 badgeElement.classList.remove('badge-unlock-celebration');
             }, 3000);
         }
     }
-    
+
     createConfettiEffect(element) {
         const rect = element.getBoundingClientRect();
         const colors = ['#4ECDC4', '#44A08D', '#26D0CE', '#FFD700', '#FF6B6B', '#4ECDC4'];
-        
+
         for (let i = 0; i < 20; i++) {
             const confetti = document.createElement('div');
             confetti.style.position = 'fixed';
@@ -149,15 +149,15 @@ class UserProgress {
             confetti.style.borderRadius = '50%';
             confetti.style.pointerEvents = 'none';
             confetti.style.zIndex = '9999';
-            
+
             // Random direction and speed
             const angle = Math.random() * 360;
             const velocity = 50 + Math.random() * 100;
             const vx = Math.cos(angle * Math.PI / 180) * velocity;
             const vy = Math.sin(angle * Math.PI / 180) * velocity;
-            
+
             document.body.appendChild(confetti);
-            
+
             // Animate confetti
             let x = 0, y = 0;
             const animate = () => {
@@ -165,14 +165,14 @@ class UserProgress {
                 y += vy * 0.02 + 0.5; // gravity
                 confetti.style.transform = `translate(${x}px, ${y}px)`;
                 confetti.style.opacity = 1 - (y / 200);
-                
+
                 if (y < 200 && confetti.style.opacity > 0) {
                     requestAnimationFrame(animate);
                 } else {
                     confetti.remove();
                 }
             };
-            
+
             requestAnimationFrame(animate);
         }
     }
@@ -181,21 +181,21 @@ class UserProgress {
         const data = this.getData();
         const newScores = [...data.questionSetScores];
         newScores[questionSetIndex] = score;
-        
+
         // Check if this is the first completion of any question set
         const wasFirstCompletion = data.questionSetScores.every(score => score === null);
-        
+
         // Check for emotion expert badge on first completion with good score
         if (wasFirstCompletion && score >= 70) {
             this.addBadge('emotion_expert');
         }
-        
+
         // Count completed sets
         const completedCount = newScores.filter(score => score !== null).length;
         const completedScores = newScores.filter(score => score !== null);
-        const averageScore = completedScores.length > 0 ? 
+        const averageScore = completedScores.length > 0 ?
             completedScores.reduce((a, b) => a + b, 0) / completedScores.length : 0;
-        
+
         this.updateData({
             completedQuestionSets: completedCount,
             totalQuestionSetsCompleted: completedCount,
@@ -211,25 +211,25 @@ class UserProgress {
         if (completedCount >= 5) {
             this.addBadge('question_master');
         }
-        
+
         // Check for explorer badge (complete all activities)
         if (data.totalStoriesRead >= 6 && completedCount >= 5) {
             this.addBadge('explorer');
         }
     }
-    
+
     updateQuizSelectionCards() {
         const data = this.getData();
-        
+
         for (let i = 0; i < 5; i++) {
             const card = document.querySelector(`[data-quiz="${i}"]`);
             const statusElement = document.getElementById(`status-${i}`);
             const scoreElement = document.getElementById(`score-${i}`);
             const button = card?.querySelector('.start-quiz-btn');
-            
+
             if (card && statusElement && scoreElement && button) {
                 const score = data.questionSetScores[i];
-                
+
                 if (score !== null) {
                     // Completed
                     card.classList.add('completed');
@@ -266,12 +266,12 @@ class UserProgress {
             if (data.totalStoriesRead + 1 >= 6) {
                 this.addBadge('bookworm');
             }
-            
+
             // Check for storyteller badge (read all stories and complete quizzes)
             if (data.totalStoriesRead >= 6 && data.totalQuestionSetsCompleted >= 3) {
                 this.addBadge('storyteller');
             }
-            
+
             // Check for helper badge (help others by sharing progress)
             if (data.totalStoriesRead >= 4 && data.totalQuestionSetsCompleted >= 2) {
                 this.addBadge('helper');
@@ -281,7 +281,7 @@ class UserProgress {
 
     updateUI() {
         const data = this.getData();
-        
+
         // Update points display
         const pointsElement = document.getElementById('currentPoints');
         if (pointsElement) {
@@ -315,13 +315,13 @@ class UserProgress {
         if (avgScore) {
             avgScore.textContent = `${data.averageScore}/10`;
         }
-        
+
         // Update quiz selection cards
         this.updateQuizSelectionCards();
 
         // Update weekly progress
         const weeklyProgress = Math.min((data.totalStoriesRead + data.totalQuestionSetsCompleted) * 15, 100);
-        
+
         // Update circular progress ring
         const progressCircle = document.querySelector('.progress-ring-circle');
         if (progressCircle) {
@@ -347,17 +347,17 @@ class UserProgress {
         const badgeItems = document.querySelectorAll('.badge-item');
         const badgeIcons = [
             'fas fa-bullseye',
-            'fas fa-book', 
+            'fas fa-book',
             'fas fa-heart',
             'fas fa-pen-fancy',
             'fas fa-hands-helping',
             'fas fa-search'
         ];
-        
+
         badgeItems.forEach((item, index) => {
             const badgeIds = ['question_master', 'bookworm', 'emotion_expert', 'storyteller', 'helper', 'explorer'];
             const badgeId = badgeIds[index];
-            
+
             if (earnedBadges.includes(badgeId)) {
                 item.classList.remove('locked');
                 item.classList.add('earned');
@@ -377,29 +377,29 @@ class UserProgress {
             }
         });
     }
-    
+
     animateProgressChart(percentage) {
         const chartFill = document.getElementById('chartFill');
         const chartPercentage = document.getElementById('chartPercentage');
         const milestones = document.querySelectorAll('.milestone');
-        
+
         if (!chartFill || !chartPercentage) return;
-        
+
         // Reset to 0
         chartFill.style.width = '0%';
         chartPercentage.textContent = '0%';
-        
+
         // Animate to target percentage
         setTimeout(() => {
             chartFill.style.width = `${percentage}%`;
             chartPercentage.textContent = `${percentage}%`;
-            
+
             // Add bounce animation to percentage
             chartPercentage.classList.add('animate');
             setTimeout(() => {
                 chartPercentage.classList.remove('animate');
             }, 600);
-            
+
             // Activate milestones based on percentage
             milestones.forEach(milestone => {
                 const milestonePercent = parseInt(milestone.dataset.percent);
@@ -409,18 +409,18 @@ class UserProgress {
                     milestone.classList.remove('active');
                 }
             });
-            
+
             // Add sparkles if 100%
             if (percentage >= 100) {
                 this.addSparkles();
             }
         }, 100);
     }
-    
+
     addSparkles() {
         const sparklesContainer = document.getElementById('chartSparkles');
         if (!sparklesContainer) return;
-        
+
         // Create multiple sparkles
         for (let i = 0; i < 5; i++) {
             const sparkle = document.createElement('div');
@@ -432,9 +432,9 @@ class UserProgress {
             sparkle.style.animation = `sparkle 1.5s infinite`;
             sparkle.style.animationDelay = Math.random() * 1 + 's';
             sparkle.style.pointerEvents = 'none';
-            
+
             sparklesContainer.appendChild(sparkle);
-            
+
             // Remove sparkle after animation
             setTimeout(() => {
                 if (sparkle.parentNode) {
@@ -451,556 +451,556 @@ const userProgress = new UserProgress();
 // Question Set System - Split into smaller question sets
 const QUESTION_SET_SIZE = 10; // 10 questions per question set
 const quizData = [
-  {
-    "question": "Khi em cảm thấy buồn, em nên làm gì?",
-    "options": [
-      "Giấu kín trong lòng",
-      "La hét với mọi người",
-      "Chia sẻ với người mà em tin tưởng",
-      "Tự trách bản thân"
-    ],
-    "correct": 2,
-    "explanation": "Chia sẻ cảm xúc với người tin tưởng giúp em được lắng nghe và nhận được hỗ trợ cụ thể điều này giúp giảm áp lực trong lòng và tìm cách giải quyết. Khi nói ra, em cũng dễ nhận ra nguyên nhân cảm xúc và học được cách quản lý chúng. Giấu kín hay tự trách thường làm cảm xúc nặng thêm và có thể dẫn đến stress kéo dài."
-  },
-  {
-    "question": "Khi bạn thân không chơi với em nữa, em nên:",
-    "options": [
-      "Cãi nhau lại",
-      "Hỏi bạn xem có chuyện gì xảy ra",
-      "Bỏ mặc bạn",
-      "Nói xấu bạn"
-    ],
-    "correct": 1,
-    "explanation": "Hỏi thẳng một cách lịch sự cho phép em biết lý do và tìm cách giải quyết giao tiếp trực tiếp giúp tránh hiểu lầm. Phản ứng tiêu cực như cãi nhau hay nói xấu thường làm tình huống tệ hơn và phá hủy mối quan hệ. Dù kết quả thế nào, việc hỏi cho thấy em tôn trọng mối quan hệ và học được kỹ năng giải quyết mâu thuẫn."
-  },
-  {
-    "question": "Em cảm thấy thế nào khi được khen ngợi?",
-    "options": [
-      "Vui và tự hào",
-      "Lo lắng",
-      "Bình thường",
-      "Giận dữ"
-    ],
-    "correct": 0,
-    "explanation": "Cảm thấy vui và tự hào khi được khen là phản ứng tự nhiên; khen ngợi củng cố hành vi tích cực và tăng tự tin. Tuy nhiên cần biết tiếp nhận khen một cách khiêm tốn và không ỷ lại dùng nó làm động lực để tiếp tục cố gắng. Nếu em cảm thấy lo lắng khi được khen, có thể do sợ kỳ vọng; nhận diện điều đó sẽ giúp em xử lý cảm xúc tốt hơn."
-  },
-  {
-    "question": "Khi em thấy một bạn khác bị bắt nạt, em nên:",
-    "options": [
-      "Làm ngơ",
-      "Cười cùng nhóm bắt nạt",
-      "Báo cho thầy cô hoặc người lớn",
-      "Quay video lại"
-    ],
-    "correct": 2,
-    "explanation": "Báo cho người lớn đáng tin cậy giúp can thiệp kịp thời và bảo vệ người bị bắt nạt, quay phim hoặc làm ngơ có thể làm tình huống kéo dài. Giúp đỡ nạn nhân hoặc tìm người lớn cho thấy em biết đứng về điều đúng và có trách nhiệm. Hành động an toàn và đúng mực cũng bảo vệ chính em khỏi rủi ro."
-  },
-  {
-    "question": "Nếu em làm sai điều gì, việc đầu tiên nên làm là:",
-    "options": [
-      "Giấu đi",
-      "Nhận lỗi và xin lỗi",
-      "Đổ lỗi cho người khác",
-      "Làm như không có gì"
-    ],
-    "correct": 1,
-    "explanation": "Nhận lỗi và xin lỗi là bước đầu để sửa sai và lấy lại niềm tin, nó cho thấy trách nhiệm và trưởng thành. Việc này giúp học được bài học từ sai lầm và xây dựng mối quan hệ bền vững. Trái lại, giấu lỗi hay đổ thừa sẽ dẫn tới hậu quả lớn hơn và mất lòng tin."
-  },
-  {
-    "question": "Khi em cảm thấy lo lắng trước một bài kiểm tra, em nên:",
-    "options": [
-      "Hít thở sâu, ôn lại kiến thức và tin vào bản thân",
-      "Cố gắng quên đi",
-      "Than phiền với bạn bè",
-      "Tự trách mình kém cỏi"
-    ],
-    "correct": 0,
-    "explanation": "Kỹ thuật hít thở giúp giảm stress tức thì, còn ôn luyện giúp em cảm thấy sẵn sàng cả hai kết hợp làm giảm lo lắng. Tin vào bản thân là cách xây dựng thái độ tích cực, quan trọng hơn việc than phiền hay né tránh. Tự trách chỉ làm tâm trạng tệ hơn và không cải thiện hiệu suất."
-  },
-  {
-    "question": "Cảm xúc “ghen tị” xuất hiện khi:",
-    "options": [
-      "Em mong muốn có được điều mà người khác có",
-      "Em vui khi bạn mình thành công",
-      "Em không thích ai cả",
-      "Em thấy buồn ngủ"
-    ],
-    "correct": 0,
-    "explanation": "Ghen tị thường bắt nguồn từ mong muốn hoặc cảm thấy thiếu thốn, đó là tín hiệu để em hiểu giá trị bản thân và mục tiêu cá nhân. Nhận diện cảm xúc này giúp biến nó thành động lực để phát triển thay vì ghen ghét. Học cách so sánh lành mạnh và tập trung vào mục tiêu bản thân sẽ giảm cảm giác tiêu cực."
-  },
-  {
-    "question": "Khi em tức giận, cách thể hiện đúng là:",
-    "options": [
-      "Nói với người khác rằng em đang tức giận, nhưng bằng lời bình tĩnh",
-      "La hét thật to",
-      "Im lặng rồi tránh mặt mãi",
-      "Viết lời xúc phạm"
-    ],
-    "correct": 0,
-    "explanation": "Thổ lộ cảm xúc bằng ngôn ngữ bình tĩnh giúp người khác hiểu và cùng giải quyết vấn đề mà không gây tổn thương. Giữ im lặng quá mức hoặc bộc phát bằng hành vi xấu đều không giúp giải quyết nguyên nhân. Kỹ năng diễn đạt cảm xúc rõ ràng là một phần quan trọng của quản lý cơn giận."
-  },
-  {
-    "question": "Một người hiểu rõ cảm xúc bản thân là người:",
-    "options": [
-      "Biết mình đang cảm thấy gì và vì sao",
-      "Giấu hết cảm xúc",
-      "Không bao giờ khóc",
-      "Luôn vui vẻ dù gặp chuyện gì"
-    ],
-    "correct": 0,
-    "explanation": "Hiểu cảm xúc có nghĩa là nhận diện loại cảm xúc và nguyên nhân điều này giúp chọn cách phản ứng phù hợp. Người hiểu cảm xúc có thể điều chỉnh hành vi và tìm cách hỗ trợ bản thân khi cần. Không phải là không có cảm xúc mà là biết quản lý chúng một cách lành mạnh."
-  },
-  {
-    "question": "Khi em thấy buồn lâu ngày, việc nên làm nhất là:",
-    "options": [
-      "Chia sẻ với bố mẹ, thầy cô hoặc chuyên gia tâm lý học đường",
-      "Cố tỏ ra mạnh mẽ",
-      "Ở một mình",
-      "Không nói với ai"
-    ],
-    "correct": 0,
-    "explanation": "Buồn kéo dài có thể là dấu hiệu cần sự hỗ trợ chuyên môn, chia sẻ giúp phát hiện nguyên nhân và nhận được giúp đỡ phù hợp. Ở một mình hay che giấu cảm xúc có thể làm tình trạng tệ hơn. Thầy cô, cha mẹ hoặc chuyên gia có thể đưa ra lời khuyên, hỗ trợ và can thiệp kịp thời."
-  },
-   {
-    "question": "Khi nói chuyện với người khác, điều quan trọng nhất là:",
-    "options": [
-      "Nói thật to",
-      "Nói thật nhanh",
-      "Lắng nghe và tôn trọng người khác",
-      "Luôn đúng ý mình"
-    ],
-    "correct": 2,
-    "explanation": "Giao tiếp hiệu quả bắt đầu bằng lắng nghe khi em lắng nghe, em hiểu được quan điểm người khác và phản hồi phù hợp. Tôn trọng giúp tạo môi trường an toàn để chia sẻ. Nói to hay nhanh không bằng hiểu và tôn trọng."
-  },
-  {
-    "question": "Nếu bạn trong lớp bị điểm kém, em nên nói gì?",
-    "options": [
-      "Không sao đâu, lần sau cố gắng nhé!",
-      "Cậu dở quá!",
-      "Tớ điểm cao hơn cậu đấy!",
-      "Tớ không quan tâm"
-    ],
-    "correct": 0,
-    "explanation": "Lời động viên giúp duy trì tự tôn của bạn và khuyến khích nỗ lực cải thiện. Chê bai hoặc so sánh sẽ làm tổn thương và có thể gây xung đột. Hỗ trợ tinh thần là phần quan trọng của kỹ năng giao tiếp."
-  },
-  {
-    "question": "Khi tranh luận, để tránh cãi nhau, em nên:",
-    "options": [
-      "Nói át người khác",
-      "Lắng nghe và nói bình tĩnh",
-      "Bỏ đi không nói gì",
-      "Nổi giận"
-    ],
-    "correct": 1,
-    "explanation": "Tranh luận xây dựng khi có lắng nghe và trao đổi tôn trọng; giữ bình tĩnh giúp giữ trọng tâm vào vấn đề. Nói át hay nổi giận thường làm mất tính xây dựng. Kỹ năng giải quyết mâu thuẫn dựa trên lắng nghe chủ động."
-  },
-  {
-    "question": "Khi em cần giúp đỡ, em nên:",
-    "options": [
-      "Giấu cảm xúc",
-      "Nói rõ điều mình cần",
-      "Mong người khác tự hiểu",
-      "Tránh né"
-    ],
-    "correct": 1,
-    "explanation": "Nói rõ điều cần giúp đỡ giúp người khác hiểu và đưa ra hỗ trợ chính xác; im lặng khiến mọi người không biết em gặp khó khăn. Học cách yêu cầu giúp đỡ là dấu hiệu trưởng thành và tự lực. Thẳng thắn nhưng lịch sự tạo kết quả tốt hơn."
-  },
-  {
-    "question": "Nếu em vô tình làm bạn buồn, em nên:",
-    "options": [
-      "Không để ý",
-      "Xin lỗi và tìm cách làm hòa",
-      "Trách bạn quá nhạy cảm",
-      "Lờ đi"
-    ],
-    "correct": 1,
-    "explanation": "Xin lỗi chân thành và nỗ lực sửa sai cho thấy tôn trọng cảm xúc người khác và giúp hàn gắn mối quan hệ. Bỏ qua hoặc đổ lỗi sẽ khiến mối quan hệ xấu đi. Học cách nhận biết khi mình vô tình gây tổn thương là phần quan trọng của trưởng thành."
-  },
-  {
-    "question": "Khi bạn nói chuyện nhưng em không hiểu ý, em nên:",
-    "options": [
-      "Hỏi lại một cách lịch sự",
-      "Gật đầu đại cho xong",
-      "Cười trừ",
-      "Bỏ đi"
-    ],
-    "correct": 0,
-    "explanation": "Hỏi lại giúp làm rõ thông tin và tránh hiểu lầm; đây là hành vi chủ động trong giao tiếp. Gật đầu hay bỏ qua có thể dẫn đến sai sót trong công việc hoặc quan hệ. Hỏi là dấu hiệu của sự tôn trọng và trách nhiệm."
-  },
-  {
-    "question": "Khi giao tiếp, ánh mắt thể hiện điều gì?",
-    "options": [
-      "Sự lắng nghe và tôn trọng",
-      "Sự sợ hãi",
-      "Sự tức giận",
-      "Thờ ơ"
-    ],
-    "correct": 0,
-    "explanation": "Ánh mắt phù hợp (nhìn khi nói chuyện) truyền đạt sự chú ý và tôn trọng; nó giúp người nói cảm thấy được trân trọng. Tránh ánh mắt hoàn toàn có thể bị hiểu nhầm là thiếu quan tâm. Tuy nhiên cần giữ sự tế nhị để không gây khó chịu cho người khác."
-  },
-  {
-    "question": "Nếu bạn góp ý cho em điều chưa đúng, em nên:",
-    "options": [
-      "Cảm ơn bạn và xem xét lại",
-      "Cãi lại ngay",
-      "Cho rằng bạn sai",
-      "Giận và không chơi nữa"
-    ],
-    "correct": 0,
-    "explanation": "Tiếp nhận góp ý với thái độ cởi mở cho phép em học hỏi và hoàn thiện bản thân. Cảm ơn không có nghĩa là đồng ý ngay mà là tôn trọng nỗ lực giúp đỡ. Trách móc hay cãi lại ngay thường làm mất cơ hội phát triển."
-  },
-  {
-    "question": "Khi em kể chuyện với người khác, cần nhớ:",
-    "options": [
-      "Không nói xấu, không làm tổn thương người khác",
-      "Nói sao cũng được",
-      "Càng phóng đại càng hay",
-      "Không cần kiểm tra đúng sai"
-    ],
-    "correct": 0,
-    "explanation": "Truyền đạt trung thực và tôn trọng giúp bảo vệ danh dự người khác và xây dựng lòng tin. Nói xấu hay thêu dệt có thể gây hậu quả xã hội và tổn thương người bị nói đến. Thành thật và có trách nhiệm khi kể chuyện là kỹ năng đạo đức quan trọng."
-  },
-  {
-    "question": "Giao tiếp hiệu quả là khi:",
-    "options": [
-      "Hai bên hiểu, tôn trọng và hợp tác với nhau",
-      "Chỉ một người nói",
-      "Ai to tiếng hơn là người thắng",
-      "Nói cho vui thôi"
-    ],
-    "correct": 0,
-    "explanation": "Giao tiếp hiệu quả là quá trình tương tác hai chiều, trong đó cả hai bên lắng nghe và thấu hiểu nhau để cùng hành động. Nếu chỉ một người nói hoặc giành 'chiến thắng' bằng tiếng lớn, thông điệp thực sự có thể bị mất. Mục tiêu là xây dựng sự hiểu biết và hợp tác."
-  },
     {
-    "question": "Khi gặp khó khăn, điều tốt nhất nên làm là:",
-    "options": [
-      "Bình tĩnh và tìm cách giải quyết",
-      "Bỏ cuộc ngay",
-      "Than phiền với mọi người",
-      "Đổ lỗi cho hoàn cảnh"
-    ],
-    "correct": 0,
-    "explanation": "Giữ bình tĩnh giúp suy nghĩ rõ, xác định nguyên nhân và tìm giải pháp khả thi. Bỏ cuộc hay đổ lỗi làm mất cơ hội học hỏi và trưởng thành. Khả năng giải quyết vấn đề là một kỹ năng sống quan trọng giúp em tự lập."
-  },
-  {
-    "question": "Em có thể rèn tính kiên nhẫn bằng cách:",
-    "options": [
-      "Thử lại nhiều lần khi chưa thành công",
-      "Làm qua loa cho nhanh",
-      "Tránh việc khó",
-      "Nhờ người khác làm giúp"
-    ],
-    "correct": 0,
-    "explanation": "Kiên nhẫn xây dựng qua thực hành lặp lại và chấp nhận rằng tiến bộ cần thời gian. Tránh việc khó chỉ kéo dài tình trạng không tiến bộ. Thử lại cho thấy sự kiên trì và giúp tăng năng lực tự giải quyết."
-  },
-  {
-    "question": "Khi em giúp đỡ người khác, cảm xúc thường là:",
-    "options": [
-      "Vui và tự hào",
-      "Lo lắng",
-      "Giận dữ",
-      "Mệt mỏi"
-    ],
-    "correct": 0,
-    "explanation": "Giúp đỡ người khác thường mang lại cảm giác thỏa mãn và tăng giá trị bản thân đó là một phần của khỏe mạnh tinh thần xã hội. Tuy nhiên cần biết giữ giới hạn nếu việc giúp gây hại cho bản thân. Cảm giác vui sau khi giúp là động lực để tiếp tục làm việc tốt."
-  },
-  {
-    "question": "Kỹ năng quản lý thời gian tốt là:",
-    "options": [
-      "Làm việc gì thích trước",
-      "Làm ngẫu nhiên",
-      "Lập kế hoạch và làm theo thứ tự ưu tiên",
-      "Làm đến đâu hay đến đó"
-    ],
-    "correct": 2,
-    "explanation": "Lập kế hoạch và ưu tiên giúp hoàn thành nhiệm vụ quan trọng, giảm áp lực và đạt hiệu suất cao hơn. Làm việc theo cảm hứng hay ngẫu nhiên thường dẫn đến trì hoãn và thiếu hiệu quả. Kỹ năng này rất hữu ích trong học tập và cuộc sống."
-  },
-  {
-    "question": "Khi bị thầy cô nhắc nhở, em nên:",
-    "options": [
-      "Giận dữ và cãi lại",
-      "Lắng nghe và sửa sai",
-      "Khóc lóc",
-      "Nói xấu thầy cô"
-    ],
-    "correct": 1,
-    "explanation": "Lắng nghe khi bị nhắc nhở cho phép em hiểu lý do và cải thiện hành vi, đây là thái độ cầu tiến. Phản ứng tiêu cực thường làm mối quan hệ giáo viên học sinh xấu đi. Sửa sai thể hiện trách nhiệm và trưởng thành."
-  },
-  {
-    "question": "Khi gặp thất bại, người mạnh mẽ sẽ:",
-    "options": [
-      "Tìm nguyên nhân và rút kinh nghiệm để làm lại",
-      "Từ bỏ ngay",
-      "Đổ lỗi cho may mắn",
-      "Nản chí và than vãn"
-    ],
-    "correct": 0,
-    "explanation": "Thất bại là cơ hội học hỏi, phân tích nguyên nhân giúp tránh lặp lại sai lầm và phát triển kỹ năng. Từ bỏ hoặc đổ lỗi ngăn cản sự tiến bộ. Kiên trì và sửa đổi chiến lược là dấu hiệu của sức mạnh nội tâm."
-  },
-  {
-    "question": "Em có thể rèn tính kỷ luật bằng cách:",
-    "options": [
-      "Làm đúng kế hoạch, dù đôi khi không thích",
-      "Làm theo cảm hứng",
-      "Đợi người khác nhắc",
-      "Trì hoãn liên tục"
-    ],
-    "correct": 0,
-    "explanation": "Kỷ luật đòi hỏi quyết tâm thực hiện kế hoạch ngay cả khi không có hứng; điều này tạo ra thói quen tích cực. Trì hoãn và phụ thuộc vào người khác sẽ làm mất cơ hội phát triển. Kỷ luật giúp em đạt mục tiêu dài hạn."
-  },
-  {
-    "question": "Khi em giúp người khác nhưng không được cảm ơn, em nên:",
-    "options": [
-      "Vẫn vui vì mình đã làm điều đúng",
-      "Thấy bực và hối hận",
-      "Quyết không giúp nữa",
-      "Nói cho cả lớp biết"
-    ],
-    "correct": 0,
-    "explanation": "Giúp mà không mong điều đáp trả là hành vi có giá trị nội tại, niềm vui đến từ việc làm điều đúng chứ không phải từ lời cảm ơn. Nếu cảm thấy bị lợi dụng, em có thể điều chỉnh giới hạn trong lần sau. Giữ thái độ thiện chí giúp duy trì lòng tốt lâu dài."
-  },
-  {
-    "question": "Khi làm việc nhóm, nếu ý kiến em không được chọn, em nên:",
-    "options": [
-      "Tôn trọng ý kiến chung và tiếp tục đóng góp",
-      "Giận dỗi",
-      "Không tham gia nữa",
-      "Cãi đến cùng"
-    ],
-    "correct": 0,
-    "explanation": "Tôn trọng quyết định nhóm giúp đạt mục tiêu chung, em vẫn có thể đóng góp ý khác trong tương lai. Cãi vã hay rút lui làm giảm hiệu quả tập thể. Làm việc nhóm đòi hỏi tinh thần hợp tác và linh hoạt."
-  },
-  {
-    "question": "“Tự tin” nghĩa là:",
-    "options": [
-      "Tin vào khả năng của bản thân và dám thử thách",
-      "Luôn nghĩ mình giỏi hơn người khác",
-      "Không bao giờ sợ hãi",
-      "Bắt buộc người khác nghe theo mình"
-    ],
-    "correct": 0,
-    "explanation": "Tự tin là nhận biết khả năng và chấp nhận thử thách, đồng thời biết giới hạn và học hỏi tiếp. Nó khác với kiêu ngạo tự tin kết hợp với khiêm tốn giúp em tiến bộ. Sợ hãi tồn tại nhưng tự tin giúp em vượt qua nó."
-  },
+        "question": "Khi em cảm thấy buồn, em nên làm gì?",
+        "options": [
+            "Giấu kín trong lòng",
+            "La hét với mọi người",
+            "Chia sẻ với người mà em tin tưởng",
+            "Tự trách bản thân"
+        ],
+        "correct": 2,
+        "explanation": "Chia sẻ cảm xúc với người tin tưởng giúp em được lắng nghe và nhận được hỗ trợ cụ thể điều này giúp giảm áp lực trong lòng và tìm cách giải quyết. Khi nói ra, em cũng dễ nhận ra nguyên nhân cảm xúc và học được cách quản lý chúng. Giấu kín hay tự trách thường làm cảm xúc nặng thêm và có thể dẫn đến stress kéo dài."
+    },
     {
-    "question": "Nếu bạn mới chuyển đến lớp, em nên làm gì?",
-    "options": [
-      "Chào hỏi và làm quen",
-      "Ngó lơ bạn",
-      "Nói chuyện riêng với nhóm mình",
-      "Đợi bạn tự làm quen"
-    ],
-    "correct": 0,
-    "explanation": "Chào hỏi thân thiện giúp bạn mới cảm thấy được chào đón và dễ hòa nhập. Hành động nhỏ như giới thiệu bản thân có thể mở ra mối quan hệ mới. Ngó lơ khiến người đó cô lập và có thể gây mất đoàn kết."
-  },
-  {
-    "question": "Khi thấy người khác đang nói chuyện, em nên:",
-    "options": [
-      "Chờ họ nói xong rồi mới nói",
-      "Cắt lời",
-      "La to để họ nghe mình",
-      "Bỏ đi"
-    ],
-    "correct": 0,
-    "explanation": "Chờ người khác kết thúc thể hiện sự tôn trọng và giúp cuộc trò chuyện trôi chảy. Cắt lời hay la hét làm gián đoạn và có thể gây mâu thuẫn. Kỹ năng chờ lượt là phần của giao tiếp lịch sự."
-  },
-  {
-    "question": "Nếu em làm mất đồ của bạn, em nên:",
-    "options": [
-      "Giấu đi",
-      "Thú nhận và xin lỗi",
-      "Nói là không biết",
-      "Đổ lỗi cho người khác"
-    ],
-    "correct": 1,
-    "explanation": "Thú nhận lỗi và xin lỗi là cách minh bạch, giúp người bị mất biết tình hình và tìm giải pháp bù đắp. Giấu hay chối bỏ sẽ làm mất uy tín và làm tổn hại quan hệ. Hành động sửa sai (tìm lại hoặc đền bù) quan trọng hơn lời nói."
-  },
-  {
-    "question": "Khi tham gia hoạt động nhóm, điều quan trọng là:",
-    "options": [
-      "Hợp tác và lắng nghe ý kiến mọi người",
-      "Chỉ làm theo ý mình",
-      "Không cần đóng góp",
-      "Làm cho xong"
-    ],
-    "correct": 0,
-    "explanation": "Hợp tác và tôn trọng ý kiến giúp nhóm tận dụng sức mạnh tập thể và đạt kết quả tốt hơn. Làm theo ý mình một mình có thể dẫn đến xung đột và kết quả kém. Đóng góp xây dựng là trách nhiệm của mỗi thành viên."
-  },
-  {
-    "question": "Khi em cảm thấy tức giận, cách tốt nhất là:",
-    "options": [
-      "Hít thở sâu và bình tĩnh lại",
-      "La hét",
-      "Đập đồ",
-      "Giữ cơn giận trong lòng"
-    ],
-    "correct": 0,
-    "explanation": "Kỹ thuật hít thở giúp giảm phản ứng sinh lý của giận dữ, cho em thời gian để suy nghĩ trước khi hành động. Hành vi bộc phát hoặc dồn nén đều có thể gây hại — tìm cách thể hiện hợp lý là lựa chọn an toàn. Học phương pháp bình tĩnh giúp duy trì mối quan hệ và kiểm soát cảm xúc."
-  },
-  {
-    "question": "Khi thấy hai bạn cãi nhau, em nên:",
-    "options": [
-      "Khuyên các bạn bình tĩnh và lắng nghe nhau",
-      "Đứng xem cho vui",
-      "Kể lại với người khác",
-      "Chọc cho hai bạn cãi to hơn"
-    ],
-    "correct": 0,
-    "explanation": "Khuyên bình tĩnh giúp hạ nhiệt cảm xúc và mở cơ hội cho trao đổi lý trí. Là người hòa giải góp phần xây dựng môi trường học đường an toàn. Kể lể hay chọc ghẹo chỉ làm tình hình tệ hơn và có thể gây hậu quả."
-  },
-  {
-    "question": "Nếu thầy cô quên khen em khi em làm tốt, em nên:",
-    "options": [
-      "Tiếp tục cố gắng vì bản thân",
-      "Thấy buồn và không làm nữa",
-      "Nói xấu thầy cô",
-      "Đòi hỏi được khen"
-    ],
-    "correct": 0,
-    "explanation": "Động lực nội tại (làm vì bản thân) bền vững hơn việc chỉ chờ khen ngoài. Nếu cần, em có thể chủ động chia sẻ thành quả với thầy cô để họ biết. Phản ứng tiêu cực dễ làm mất cơ hội được ghi nhận sau này."
-  },
-  {
-    "question": "Khi ở nơi công cộng (thư viện, bệnh viện, lớp học), em cần:",
-    "options": [
-      "Giữ trật tự và tôn trọng mọi người xung quanh",
-      "Muốn nói gì thì nói",
-      "Chơi đùa to tiếng",
-      "Không quan tâm người khác"
-    ],
-    "correct": 0,
-    "explanation": "Giữ trật tự giúp mọi người sử dụng không gian chung được thoải mái và an toàn. Tôn trọng công cộng thể hiện văn minh và ý thức xã hội. Hành vi thiếu tôn trọng có thể gây phiền hà và hậu quả xã hội."
-  },
-  {
-    "question": "Nếu bạn làm sai và bị mọi người trách, em nên:",
-    "options": [
-      "Bảo vệ bạn, giúp bạn sửa sai",
-      "Chê bạn trước lớp",
-      "Cười vì không liên quan",
-      "Quay lưng đi"
-    ],
-    "correct": 0,
-    "explanation": "Hỗ trợ bạn sửa sai tốt hơn là buông lời chỉ trích; điều đó giúp bạn học và cải thiện. Chê bai công khai làm tổn thương và không mang tính xây dựng. Thể hiện tinh thần đồng đội là giá trị quan trọng trong ứng xử."
-  },
-  {
-    "question": "Khi có mâu thuẫn trong nhóm, cách giải quyết tốt nhất là:",
-    "options": [
-      "Ngồi lại cùng nhau, lắng nghe và thống nhất cách làm",
-      "Chia phe",
-      "Ai mạnh hơn thì thắng",
-      "Bỏ cuộc"
-    ],
-    "correct": 0,
-    "explanation": "Ngồi lại trao đổi giúp mọi thành viên hiểu nhau, tìm giải pháp chung và tăng trách nhiệm tập thể. Chia phe hay áp đặt làm giảm hiệu quả và gây xung đột kéo dài. Giải quyết bằng đối thoại là kỹ năng sống thiết yếu."
-  },
+        "question": "Khi bạn thân không chơi với em nữa, em nên:",
+        "options": [
+            "Cãi nhau lại",
+            "Hỏi bạn xem có chuyện gì xảy ra",
+            "Bỏ mặc bạn",
+            "Nói xấu bạn"
+        ],
+        "correct": 1,
+        "explanation": "Hỏi thẳng một cách lịch sự cho phép em biết lý do và tìm cách giải quyết giao tiếp trực tiếp giúp tránh hiểu lầm. Phản ứng tiêu cực như cãi nhau hay nói xấu thường làm tình huống tệ hơn và phá hủy mối quan hệ. Dù kết quả thế nào, việc hỏi cho thấy em tôn trọng mối quan hệ và học được kỹ năng giải quyết mâu thuẫn."
+    },
     {
-    "question": "Khi cơ thể em bắt đầu thay đổi (cao lên, mọc tóc, vỡ giọng, có kinh nguyệt…), điều đó nghĩa là:",
-    "options": [
-      "Em bị bệnh",
-      "Cơ thể em đang lớn và phát triển bình thường",
-      "Cần phải giấu mọi người",
-      "Không nên nói với ai"
-    ],
-    "correct": 1,
-    "explanation": "Những thay đổi này là dấu hiệu dậy thì — quá trình tự nhiên khi cơ thể trưởng thành. Biết điều này giúp em không sợ hãi và chuẩn bị chăm sóc bản thân tốt hơn. Nếu có thắc mắc, em nên hỏi người lớn đáng tin để được giải thích rõ hơn."
-  },
-  {
-    "question": "Em nên làm gì nếu ai đó chạm vào người em khiến em thấy khó chịu hoặc sợ hãi?",
-    "options": [
-      "Giữ im lặng vì sợ bị la",
-      "Nói “Không!” và kể ngay cho cha mẹ, thầy cô",
-      "Bỏ qua vì chuyện nhỏ",
-      "Giấu kín để không ai biết"
-    ],
-    "correct": 1,
-    "explanation": "Bảo vệ bản thân là ưu tiên; nói “Không” rõ ràng và báo cho người lớn giúp đảm bảo an toàn và can thiệp kịp thời. Giấu kín có thể khiến hành vi lạm dụng tiếp tục. Người lớn có trách nhiệm giúp em và xử lý tình huống."
-  },
-  {
-    "question": "Phần cơ thể nào được gọi là “vùng riêng tư” mà chỉ mình em được chạm vào khi vệ sinh hoặc tắm rửa?",
-    "options": [
-      "Ngực, mông và vùng giữa hai chân",
-      "Tay và chân",
-      "Mặt và tóc",
-      "Vai và đầu gối"
-    ],
-    "correct": 0,
-    "explanation": "Vùng riêng tư là những phần cơ thể nhạy cảm, không ai có quyền chạm trừ khi để chăm sóc y tế bởi người lớn đáng tin và trong hoàn cảnh phù hợp. Biết giới hạn này giúp em nhận diện và nói “Không” khi có hành vi xâm phạm. Đây cũng là cơ sở để phòng tránh lạm dụng."
-  },
-  {
-    "question": "Khi bạn khác giới muốn ôm hoặc nắm tay, em nên:",
-    "options": [
-      "Từ chối nếu em cảm thấy không thoải mái",
-      "Cười cho qua",
-      "Đồng ý vì không muốn mất lòng",
-      "Giữ im lặng"
-    ],
-    "correct": 0,
-    "explanation": "Quyền quyết định về cơ thể của chính mình là quan trọng — em có quyền từ chối nếu không thoải mái. Tôn trọng giới hạn của bản thân là cách bảo vệ chính mình và dạy người khác cách tôn trọng em. Nếu bị ép buộc, em cần nói với người lớn đáng tin."
-  },
-  {
-    "question": "Nếu có ai đó nhắn tin, gửi hình ảnh không phù hợp cho em, em nên:",
-    "options": [
-      "Xem thử vì tò mò",
-      "Không xem và nói ngay với người lớn đáng tin cậy",
-      "Gửi cho bạn bè cùng xem",
-      "Xóa đi và giả vờ không có gì"
-    ],
-    "correct": 1,
-    "explanation": "Nội dung không phù hợp có thể gây hại về tinh thần và an toàn; không nên xem hay chia sẻ nó. Thông báo cho người lớn giúp xử lý và bảo vệ em khỏi rủi ro tiếp theo. Giấu kín có thể làm kẻ xấu tiếp tục hành vi."
-  },
-  {
-    "question": "Khi ở nơi công cộng (như nhà vệ sinh, phòng thay đồ), em nên:",
-    "options": [
-      "Đóng cửa, không để người khác nhìn thấy",
-      "Rủ bạn vào cùng",
-      "Dùng điện thoại chụp hình",
-      "Ở đó càng lâu càng tốt"
-    ],
-    "correct": 0,
-    "explanation": "Giữ quyền riêng tư bằng cách đóng cửa và thay đồ trong không gian riêng giúp bảo vệ bản thân. Không rủ người khác vào nếu đó là nơi riêng tư của từng người, và tuyệt đối không chụp hình. Hành vi tôn trọng quyền riêng tư của bản thân và người khác rất quan trọng."
-  },
-  {
-    "question": "Khi nói chuyện về giới tính, em nên:",
-    "options": [
-      "Nói bừa với bạn để tỏ ra hiểu biết",
-      "Hỏi người lớn, thầy cô hoặc chuyên gia",
-      "Tra mạng không kiểm chứng",
-      "Né tránh vì xấu hổ"
-    ],
-    "correct": 1,
-    "explanation": "Người lớn đáng tin và chuyên gia cung cấp thông tin chính xác, phù hợp với lứa tuổi; internet không kiểm soát có thể sai lệch. Hỏi một người tin cậy giúp em hiểu đúng, cảm thấy an toàn và chuẩn bị cho thay đổi cơ thể. Tránh nói bừa để không lan truyền thông tin sai."
-  },
-  {
-    "question": "Tôn trọng người khác về giới tính nghĩa là:",
-    "options": [
-      "Không trêu chọc, không kỳ thị bạn khác giới hoặc bạn có đặc điểm khác mình",
-      "Cười khi thấy ai bị chọc ghẹo",
-      "Lan truyền tin đồn",
-      "Cố tình chọc bạn khác giới"
-    ],
-    "correct": 0,
-    "explanation": "Tôn trọng giới tính giúp xã hội công bằng hơn và bảo vệ quyền lợi của mọi người. Trêu chọc hay kỳ thị gây tổn thương dài lâu và có thể dẫn đến bắt nạt. Học tôn trọng từ nhỏ giúp xây dựng môi trường an toàn và thân thiện."
-  },
-  {
-    "question": "Khi có cảm xúc lạ (thích một bạn khác giới), điều nên làm là:",
-    "options": [
-      "Bình tĩnh, xem đó là điều bình thường khi lớn lên",
-      "Giấu vì xấu hổ",
-      "Trêu chọc người đó",
-      "Khoe với bạn bè"
-    ],
-    "correct": 0,
-    "explanation": "Thích một bạn khác giới là phản ứng tự nhiên khi phát triển; bình tĩnh giúp em xử lý cảm xúc một cách tôn trọng. Nói chuyện với người lớn nếu cần lời khuyên, và tránh hành vi làm tổn thương người khác. Khoe khoang hay trêu chọc có thể gây rắc rối."
-  },
-  {
-    "question": "Việc giữ gìn vệ sinh cơ thể (thay đồ lót, tắm rửa, rửa tay) có ý nghĩa gì?",
-    "options": [
-      "Giúp cơ thể sạch sẽ, khỏe mạnh và tự tin",
-      "Chỉ để đẹp hơn",
-      "Không quan trọng",
-      "Là việc của người lớn"
-    ],
-    "correct": 0,
-    "explanation": "Vệ sinh cá nhân phòng tránh bệnh tật, giữ da và cơ thể khỏe mạnh, và giúp em cảm thấy tự tin khi giao tiếp. Đây là thói quen tự quản bản thân quan trọng khi lớn lên. Người lớn có thể hướng dẫn kỹ thuật đúng nhưng việc thực hiện là của em."
-  }
+        "question": "Em cảm thấy thế nào khi được khen ngợi?",
+        "options": [
+            "Vui và tự hào",
+            "Lo lắng",
+            "Bình thường",
+            "Giận dữ"
+        ],
+        "correct": 0,
+        "explanation": "Cảm thấy vui và tự hào khi được khen là phản ứng tự nhiên; khen ngợi củng cố hành vi tích cực và tăng tự tin. Tuy nhiên cần biết tiếp nhận khen một cách khiêm tốn và không ỷ lại dùng nó làm động lực để tiếp tục cố gắng. Nếu em cảm thấy lo lắng khi được khen, có thể do sợ kỳ vọng; nhận diện điều đó sẽ giúp em xử lý cảm xúc tốt hơn."
+    },
+    {
+        "question": "Khi em thấy một bạn khác bị bắt nạt, em nên:",
+        "options": [
+            "Làm ngơ",
+            "Cười cùng nhóm bắt nạt",
+            "Báo cho thầy cô hoặc người lớn",
+            "Quay video lại"
+        ],
+        "correct": 2,
+        "explanation": "Báo cho người lớn đáng tin cậy giúp can thiệp kịp thời và bảo vệ người bị bắt nạt, quay phim hoặc làm ngơ có thể làm tình huống kéo dài. Giúp đỡ nạn nhân hoặc tìm người lớn cho thấy em biết đứng về điều đúng và có trách nhiệm. Hành động an toàn và đúng mực cũng bảo vệ chính em khỏi rủi ro."
+    },
+    {
+        "question": "Nếu em làm sai điều gì, việc đầu tiên nên làm là:",
+        "options": [
+            "Giấu đi",
+            "Nhận lỗi và xin lỗi",
+            "Đổ lỗi cho người khác",
+            "Làm như không có gì"
+        ],
+        "correct": 1,
+        "explanation": "Nhận lỗi và xin lỗi là bước đầu để sửa sai và lấy lại niềm tin, nó cho thấy trách nhiệm và trưởng thành. Việc này giúp học được bài học từ sai lầm và xây dựng mối quan hệ bền vững. Trái lại, giấu lỗi hay đổ thừa sẽ dẫn tới hậu quả lớn hơn và mất lòng tin."
+    },
+    {
+        "question": "Khi em cảm thấy lo lắng trước một bài kiểm tra, em nên:",
+        "options": [
+            "Hít thở sâu, ôn lại kiến thức và tin vào bản thân",
+            "Cố gắng quên đi",
+            "Than phiền với bạn bè",
+            "Tự trách mình kém cỏi"
+        ],
+        "correct": 0,
+        "explanation": "Kỹ thuật hít thở giúp giảm stress tức thì, còn ôn luyện giúp em cảm thấy sẵn sàng cả hai kết hợp làm giảm lo lắng. Tin vào bản thân là cách xây dựng thái độ tích cực, quan trọng hơn việc than phiền hay né tránh. Tự trách chỉ làm tâm trạng tệ hơn và không cải thiện hiệu suất."
+    },
+    {
+        "question": "Cảm xúc “ghen tị” xuất hiện khi:",
+        "options": [
+            "Em mong muốn có được điều mà người khác có",
+            "Em vui khi bạn mình thành công",
+            "Em không thích ai cả",
+            "Em thấy buồn ngủ"
+        ],
+        "correct": 0,
+        "explanation": "Ghen tị thường bắt nguồn từ mong muốn hoặc cảm thấy thiếu thốn, đó là tín hiệu để em hiểu giá trị bản thân và mục tiêu cá nhân. Nhận diện cảm xúc này giúp biến nó thành động lực để phát triển thay vì ghen ghét. Học cách so sánh lành mạnh và tập trung vào mục tiêu bản thân sẽ giảm cảm giác tiêu cực."
+    },
+    {
+        "question": "Khi em tức giận, cách thể hiện đúng là:",
+        "options": [
+            "Nói với người khác rằng em đang tức giận, nhưng bằng lời bình tĩnh",
+            "La hét thật to",
+            "Im lặng rồi tránh mặt mãi",
+            "Viết lời xúc phạm"
+        ],
+        "correct": 0,
+        "explanation": "Thổ lộ cảm xúc bằng ngôn ngữ bình tĩnh giúp người khác hiểu và cùng giải quyết vấn đề mà không gây tổn thương. Giữ im lặng quá mức hoặc bộc phát bằng hành vi xấu đều không giúp giải quyết nguyên nhân. Kỹ năng diễn đạt cảm xúc rõ ràng là một phần quan trọng của quản lý cơn giận."
+    },
+    {
+        "question": "Một người hiểu rõ cảm xúc bản thân là người:",
+        "options": [
+            "Biết mình đang cảm thấy gì và vì sao",
+            "Giấu hết cảm xúc",
+            "Không bao giờ khóc",
+            "Luôn vui vẻ dù gặp chuyện gì"
+        ],
+        "correct": 0,
+        "explanation": "Hiểu cảm xúc có nghĩa là nhận diện loại cảm xúc và nguyên nhân điều này giúp chọn cách phản ứng phù hợp. Người hiểu cảm xúc có thể điều chỉnh hành vi và tìm cách hỗ trợ bản thân khi cần. Không phải là không có cảm xúc mà là biết quản lý chúng một cách lành mạnh."
+    },
+    {
+        "question": "Khi em thấy buồn lâu ngày, việc nên làm nhất là:",
+        "options": [
+            "Chia sẻ với bố mẹ, thầy cô hoặc chuyên gia tâm lý học đường",
+            "Cố tỏ ra mạnh mẽ",
+            "Ở một mình",
+            "Không nói với ai"
+        ],
+        "correct": 0,
+        "explanation": "Buồn kéo dài có thể là dấu hiệu cần sự hỗ trợ chuyên môn, chia sẻ giúp phát hiện nguyên nhân và nhận được giúp đỡ phù hợp. Ở một mình hay che giấu cảm xúc có thể làm tình trạng tệ hơn. Thầy cô, cha mẹ hoặc chuyên gia có thể đưa ra lời khuyên, hỗ trợ và can thiệp kịp thời."
+    },
+    {
+        "question": "Khi nói chuyện với người khác, điều quan trọng nhất là:",
+        "options": [
+            "Nói thật to",
+            "Nói thật nhanh",
+            "Lắng nghe và tôn trọng người khác",
+            "Luôn đúng ý mình"
+        ],
+        "correct": 2,
+        "explanation": "Giao tiếp hiệu quả bắt đầu bằng lắng nghe khi em lắng nghe, em hiểu được quan điểm người khác và phản hồi phù hợp. Tôn trọng giúp tạo môi trường an toàn để chia sẻ. Nói to hay nhanh không bằng hiểu và tôn trọng."
+    },
+    {
+        "question": "Nếu bạn trong lớp bị điểm kém, em nên nói gì?",
+        "options": [
+            "Không sao đâu, lần sau cố gắng nhé!",
+            "Cậu dở quá!",
+            "Tớ điểm cao hơn cậu đấy!",
+            "Tớ không quan tâm"
+        ],
+        "correct": 0,
+        "explanation": "Lời động viên giúp duy trì tự tôn của bạn và khuyến khích nỗ lực cải thiện. Chê bai hoặc so sánh sẽ làm tổn thương và có thể gây xung đột. Hỗ trợ tinh thần là phần quan trọng của kỹ năng giao tiếp."
+    },
+    {
+        "question": "Khi tranh luận, để tránh cãi nhau, em nên:",
+        "options": [
+            "Nói át người khác",
+            "Lắng nghe và nói bình tĩnh",
+            "Bỏ đi không nói gì",
+            "Nổi giận"
+        ],
+        "correct": 1,
+        "explanation": "Tranh luận xây dựng khi có lắng nghe và trao đổi tôn trọng; giữ bình tĩnh giúp giữ trọng tâm vào vấn đề. Nói át hay nổi giận thường làm mất tính xây dựng. Kỹ năng giải quyết mâu thuẫn dựa trên lắng nghe chủ động."
+    },
+    {
+        "question": "Khi em cần giúp đỡ, em nên:",
+        "options": [
+            "Giấu cảm xúc",
+            "Nói rõ điều mình cần",
+            "Mong người khác tự hiểu",
+            "Tránh né"
+        ],
+        "correct": 1,
+        "explanation": "Nói rõ điều cần giúp đỡ giúp người khác hiểu và đưa ra hỗ trợ chính xác; im lặng khiến mọi người không biết em gặp khó khăn. Học cách yêu cầu giúp đỡ là dấu hiệu trưởng thành và tự lực. Thẳng thắn nhưng lịch sự tạo kết quả tốt hơn."
+    },
+    {
+        "question": "Nếu em vô tình làm bạn buồn, em nên:",
+        "options": [
+            "Không để ý",
+            "Xin lỗi và tìm cách làm hòa",
+            "Trách bạn quá nhạy cảm",
+            "Lờ đi"
+        ],
+        "correct": 1,
+        "explanation": "Xin lỗi chân thành và nỗ lực sửa sai cho thấy tôn trọng cảm xúc người khác và giúp hàn gắn mối quan hệ. Bỏ qua hoặc đổ lỗi sẽ khiến mối quan hệ xấu đi. Học cách nhận biết khi mình vô tình gây tổn thương là phần quan trọng của trưởng thành."
+    },
+    {
+        "question": "Khi bạn nói chuyện nhưng em không hiểu ý, em nên:",
+        "options": [
+            "Hỏi lại một cách lịch sự",
+            "Gật đầu đại cho xong",
+            "Cười trừ",
+            "Bỏ đi"
+        ],
+        "correct": 0,
+        "explanation": "Hỏi lại giúp làm rõ thông tin và tránh hiểu lầm; đây là hành vi chủ động trong giao tiếp. Gật đầu hay bỏ qua có thể dẫn đến sai sót trong công việc hoặc quan hệ. Hỏi là dấu hiệu của sự tôn trọng và trách nhiệm."
+    },
+    {
+        "question": "Khi giao tiếp, ánh mắt thể hiện điều gì?",
+        "options": [
+            "Sự lắng nghe và tôn trọng",
+            "Sự sợ hãi",
+            "Sự tức giận",
+            "Thờ ơ"
+        ],
+        "correct": 0,
+        "explanation": "Ánh mắt phù hợp (nhìn khi nói chuyện) truyền đạt sự chú ý và tôn trọng; nó giúp người nói cảm thấy được trân trọng. Tránh ánh mắt hoàn toàn có thể bị hiểu nhầm là thiếu quan tâm. Tuy nhiên cần giữ sự tế nhị để không gây khó chịu cho người khác."
+    },
+    {
+        "question": "Nếu bạn góp ý cho em điều chưa đúng, em nên:",
+        "options": [
+            "Cảm ơn bạn và xem xét lại",
+            "Cãi lại ngay",
+            "Cho rằng bạn sai",
+            "Giận và không chơi nữa"
+        ],
+        "correct": 0,
+        "explanation": "Tiếp nhận góp ý với thái độ cởi mở cho phép em học hỏi và hoàn thiện bản thân. Cảm ơn không có nghĩa là đồng ý ngay mà là tôn trọng nỗ lực giúp đỡ. Trách móc hay cãi lại ngay thường làm mất cơ hội phát triển."
+    },
+    {
+        "question": "Khi em kể chuyện với người khác, cần nhớ:",
+        "options": [
+            "Không nói xấu, không làm tổn thương người khác",
+            "Nói sao cũng được",
+            "Càng phóng đại càng hay",
+            "Không cần kiểm tra đúng sai"
+        ],
+        "correct": 0,
+        "explanation": "Truyền đạt trung thực và tôn trọng giúp bảo vệ danh dự người khác và xây dựng lòng tin. Nói xấu hay thêu dệt có thể gây hậu quả xã hội và tổn thương người bị nói đến. Thành thật và có trách nhiệm khi kể chuyện là kỹ năng đạo đức quan trọng."
+    },
+    {
+        "question": "Giao tiếp hiệu quả là khi:",
+        "options": [
+            "Hai bên hiểu, tôn trọng và hợp tác với nhau",
+            "Chỉ một người nói",
+            "Ai to tiếng hơn là người thắng",
+            "Nói cho vui thôi"
+        ],
+        "correct": 0,
+        "explanation": "Giao tiếp hiệu quả là quá trình tương tác hai chiều, trong đó cả hai bên lắng nghe và thấu hiểu nhau để cùng hành động. Nếu chỉ một người nói hoặc giành 'chiến thắng' bằng tiếng lớn, thông điệp thực sự có thể bị mất. Mục tiêu là xây dựng sự hiểu biết và hợp tác."
+    },
+    {
+        "question": "Khi gặp khó khăn, điều tốt nhất nên làm là:",
+        "options": [
+            "Bình tĩnh và tìm cách giải quyết",
+            "Bỏ cuộc ngay",
+            "Than phiền với mọi người",
+            "Đổ lỗi cho hoàn cảnh"
+        ],
+        "correct": 0,
+        "explanation": "Giữ bình tĩnh giúp suy nghĩ rõ, xác định nguyên nhân và tìm giải pháp khả thi. Bỏ cuộc hay đổ lỗi làm mất cơ hội học hỏi và trưởng thành. Khả năng giải quyết vấn đề là một kỹ năng sống quan trọng giúp em tự lập."
+    },
+    {
+        "question": "Em có thể rèn tính kiên nhẫn bằng cách:",
+        "options": [
+            "Thử lại nhiều lần khi chưa thành công",
+            "Làm qua loa cho nhanh",
+            "Tránh việc khó",
+            "Nhờ người khác làm giúp"
+        ],
+        "correct": 0,
+        "explanation": "Kiên nhẫn xây dựng qua thực hành lặp lại và chấp nhận rằng tiến bộ cần thời gian. Tránh việc khó chỉ kéo dài tình trạng không tiến bộ. Thử lại cho thấy sự kiên trì và giúp tăng năng lực tự giải quyết."
+    },
+    {
+        "question": "Khi em giúp đỡ người khác, cảm xúc thường là:",
+        "options": [
+            "Vui và tự hào",
+            "Lo lắng",
+            "Giận dữ",
+            "Mệt mỏi"
+        ],
+        "correct": 0,
+        "explanation": "Giúp đỡ người khác thường mang lại cảm giác thỏa mãn và tăng giá trị bản thân đó là một phần của khỏe mạnh tinh thần xã hội. Tuy nhiên cần biết giữ giới hạn nếu việc giúp gây hại cho bản thân. Cảm giác vui sau khi giúp là động lực để tiếp tục làm việc tốt."
+    },
+    {
+        "question": "Kỹ năng quản lý thời gian tốt là:",
+        "options": [
+            "Làm việc gì thích trước",
+            "Làm ngẫu nhiên",
+            "Lập kế hoạch và làm theo thứ tự ưu tiên",
+            "Làm đến đâu hay đến đó"
+        ],
+        "correct": 2,
+        "explanation": "Lập kế hoạch và ưu tiên giúp hoàn thành nhiệm vụ quan trọng, giảm áp lực và đạt hiệu suất cao hơn. Làm việc theo cảm hứng hay ngẫu nhiên thường dẫn đến trì hoãn và thiếu hiệu quả. Kỹ năng này rất hữu ích trong học tập và cuộc sống."
+    },
+    {
+        "question": "Khi bị thầy cô nhắc nhở, em nên:",
+        "options": [
+            "Giận dữ và cãi lại",
+            "Lắng nghe và sửa sai",
+            "Khóc lóc",
+            "Nói xấu thầy cô"
+        ],
+        "correct": 1,
+        "explanation": "Lắng nghe khi bị nhắc nhở cho phép em hiểu lý do và cải thiện hành vi, đây là thái độ cầu tiến. Phản ứng tiêu cực thường làm mối quan hệ giáo viên học sinh xấu đi. Sửa sai thể hiện trách nhiệm và trưởng thành."
+    },
+    {
+        "question": "Khi gặp thất bại, người mạnh mẽ sẽ:",
+        "options": [
+            "Tìm nguyên nhân và rút kinh nghiệm để làm lại",
+            "Từ bỏ ngay",
+            "Đổ lỗi cho may mắn",
+            "Nản chí và than vãn"
+        ],
+        "correct": 0,
+        "explanation": "Thất bại là cơ hội học hỏi, phân tích nguyên nhân giúp tránh lặp lại sai lầm và phát triển kỹ năng. Từ bỏ hoặc đổ lỗi ngăn cản sự tiến bộ. Kiên trì và sửa đổi chiến lược là dấu hiệu của sức mạnh nội tâm."
+    },
+    {
+        "question": "Em có thể rèn tính kỷ luật bằng cách:",
+        "options": [
+            "Làm đúng kế hoạch, dù đôi khi không thích",
+            "Làm theo cảm hứng",
+            "Đợi người khác nhắc",
+            "Trì hoãn liên tục"
+        ],
+        "correct": 0,
+        "explanation": "Kỷ luật đòi hỏi quyết tâm thực hiện kế hoạch ngay cả khi không có hứng; điều này tạo ra thói quen tích cực. Trì hoãn và phụ thuộc vào người khác sẽ làm mất cơ hội phát triển. Kỷ luật giúp em đạt mục tiêu dài hạn."
+    },
+    {
+        "question": "Khi em giúp người khác nhưng không được cảm ơn, em nên:",
+        "options": [
+            "Vẫn vui vì mình đã làm điều đúng",
+            "Thấy bực và hối hận",
+            "Quyết không giúp nữa",
+            "Nói cho cả lớp biết"
+        ],
+        "correct": 0,
+        "explanation": "Giúp mà không mong điều đáp trả là hành vi có giá trị nội tại, niềm vui đến từ việc làm điều đúng chứ không phải từ lời cảm ơn. Nếu cảm thấy bị lợi dụng, em có thể điều chỉnh giới hạn trong lần sau. Giữ thái độ thiện chí giúp duy trì lòng tốt lâu dài."
+    },
+    {
+        "question": "Khi làm việc nhóm, nếu ý kiến em không được chọn, em nên:",
+        "options": [
+            "Tôn trọng ý kiến chung và tiếp tục đóng góp",
+            "Giận dỗi",
+            "Không tham gia nữa",
+            "Cãi đến cùng"
+        ],
+        "correct": 0,
+        "explanation": "Tôn trọng quyết định nhóm giúp đạt mục tiêu chung, em vẫn có thể đóng góp ý khác trong tương lai. Cãi vã hay rút lui làm giảm hiệu quả tập thể. Làm việc nhóm đòi hỏi tinh thần hợp tác và linh hoạt."
+    },
+    {
+        "question": "“Tự tin” nghĩa là:",
+        "options": [
+            "Tin vào khả năng của bản thân và dám thử thách",
+            "Luôn nghĩ mình giỏi hơn người khác",
+            "Không bao giờ sợ hãi",
+            "Bắt buộc người khác nghe theo mình"
+        ],
+        "correct": 0,
+        "explanation": "Tự tin là nhận biết khả năng và chấp nhận thử thách, đồng thời biết giới hạn và học hỏi tiếp. Nó khác với kiêu ngạo tự tin kết hợp với khiêm tốn giúp em tiến bộ. Sợ hãi tồn tại nhưng tự tin giúp em vượt qua nó."
+    },
+    {
+        "question": "Nếu bạn mới chuyển đến lớp, em nên làm gì?",
+        "options": [
+            "Chào hỏi và làm quen",
+            "Ngó lơ bạn",
+            "Nói chuyện riêng với nhóm mình",
+            "Đợi bạn tự làm quen"
+        ],
+        "correct": 0,
+        "explanation": "Chào hỏi thân thiện giúp bạn mới cảm thấy được chào đón và dễ hòa nhập. Hành động nhỏ như giới thiệu bản thân có thể mở ra mối quan hệ mới. Ngó lơ khiến người đó cô lập và có thể gây mất đoàn kết."
+    },
+    {
+        "question": "Khi thấy người khác đang nói chuyện, em nên:",
+        "options": [
+            "Chờ họ nói xong rồi mới nói",
+            "Cắt lời",
+            "La to để họ nghe mình",
+            "Bỏ đi"
+        ],
+        "correct": 0,
+        "explanation": "Chờ người khác kết thúc thể hiện sự tôn trọng và giúp cuộc trò chuyện trôi chảy. Cắt lời hay la hét làm gián đoạn và có thể gây mâu thuẫn. Kỹ năng chờ lượt là phần của giao tiếp lịch sự."
+    },
+    {
+        "question": "Nếu em làm mất đồ của bạn, em nên:",
+        "options": [
+            "Giấu đi",
+            "Thú nhận và xin lỗi",
+            "Nói là không biết",
+            "Đổ lỗi cho người khác"
+        ],
+        "correct": 1,
+        "explanation": "Thú nhận lỗi và xin lỗi là cách minh bạch, giúp người bị mất biết tình hình và tìm giải pháp bù đắp. Giấu hay chối bỏ sẽ làm mất uy tín và làm tổn hại quan hệ. Hành động sửa sai (tìm lại hoặc đền bù) quan trọng hơn lời nói."
+    },
+    {
+        "question": "Khi tham gia hoạt động nhóm, điều quan trọng là:",
+        "options": [
+            "Hợp tác và lắng nghe ý kiến mọi người",
+            "Chỉ làm theo ý mình",
+            "Không cần đóng góp",
+            "Làm cho xong"
+        ],
+        "correct": 0,
+        "explanation": "Hợp tác và tôn trọng ý kiến giúp nhóm tận dụng sức mạnh tập thể và đạt kết quả tốt hơn. Làm theo ý mình một mình có thể dẫn đến xung đột và kết quả kém. Đóng góp xây dựng là trách nhiệm của mỗi thành viên."
+    },
+    {
+        "question": "Khi em cảm thấy tức giận, cách tốt nhất là:",
+        "options": [
+            "Hít thở sâu và bình tĩnh lại",
+            "La hét",
+            "Đập đồ",
+            "Giữ cơn giận trong lòng"
+        ],
+        "correct": 0,
+        "explanation": "Kỹ thuật hít thở giúp giảm phản ứng sinh lý của giận dữ, cho em thời gian để suy nghĩ trước khi hành động. Hành vi bộc phát hoặc dồn nén đều có thể gây hại — tìm cách thể hiện hợp lý là lựa chọn an toàn. Học phương pháp bình tĩnh giúp duy trì mối quan hệ và kiểm soát cảm xúc."
+    },
+    {
+        "question": "Khi thấy hai bạn cãi nhau, em nên:",
+        "options": [
+            "Khuyên các bạn bình tĩnh và lắng nghe nhau",
+            "Đứng xem cho vui",
+            "Kể lại với người khác",
+            "Chọc cho hai bạn cãi to hơn"
+        ],
+        "correct": 0,
+        "explanation": "Khuyên bình tĩnh giúp hạ nhiệt cảm xúc và mở cơ hội cho trao đổi lý trí. Là người hòa giải góp phần xây dựng môi trường học đường an toàn. Kể lể hay chọc ghẹo chỉ làm tình hình tệ hơn và có thể gây hậu quả."
+    },
+    {
+        "question": "Nếu thầy cô quên khen em khi em làm tốt, em nên:",
+        "options": [
+            "Tiếp tục cố gắng vì bản thân",
+            "Thấy buồn và không làm nữa",
+            "Nói xấu thầy cô",
+            "Đòi hỏi được khen"
+        ],
+        "correct": 0,
+        "explanation": "Động lực nội tại (làm vì bản thân) bền vững hơn việc chỉ chờ khen ngoài. Nếu cần, em có thể chủ động chia sẻ thành quả với thầy cô để họ biết. Phản ứng tiêu cực dễ làm mất cơ hội được ghi nhận sau này."
+    },
+    {
+        "question": "Khi ở nơi công cộng (thư viện, bệnh viện, lớp học), em cần:",
+        "options": [
+            "Giữ trật tự và tôn trọng mọi người xung quanh",
+            "Muốn nói gì thì nói",
+            "Chơi đùa to tiếng",
+            "Không quan tâm người khác"
+        ],
+        "correct": 0,
+        "explanation": "Giữ trật tự giúp mọi người sử dụng không gian chung được thoải mái và an toàn. Tôn trọng công cộng thể hiện văn minh và ý thức xã hội. Hành vi thiếu tôn trọng có thể gây phiền hà và hậu quả xã hội."
+    },
+    {
+        "question": "Nếu bạn làm sai và bị mọi người trách, em nên:",
+        "options": [
+            "Bảo vệ bạn, giúp bạn sửa sai",
+            "Chê bạn trước lớp",
+            "Cười vì không liên quan",
+            "Quay lưng đi"
+        ],
+        "correct": 0,
+        "explanation": "Hỗ trợ bạn sửa sai tốt hơn là buông lời chỉ trích; điều đó giúp bạn học và cải thiện. Chê bai công khai làm tổn thương và không mang tính xây dựng. Thể hiện tinh thần đồng đội là giá trị quan trọng trong ứng xử."
+    },
+    {
+        "question": "Khi có mâu thuẫn trong nhóm, cách giải quyết tốt nhất là:",
+        "options": [
+            "Ngồi lại cùng nhau, lắng nghe và thống nhất cách làm",
+            "Chia phe",
+            "Ai mạnh hơn thì thắng",
+            "Bỏ cuộc"
+        ],
+        "correct": 0,
+        "explanation": "Ngồi lại trao đổi giúp mọi thành viên hiểu nhau, tìm giải pháp chung và tăng trách nhiệm tập thể. Chia phe hay áp đặt làm giảm hiệu quả và gây xung đột kéo dài. Giải quyết bằng đối thoại là kỹ năng sống thiết yếu."
+    },
+    {
+        "question": "Khi cơ thể em bắt đầu thay đổi (cao lên, mọc tóc, vỡ giọng, có kinh nguyệt…), điều đó nghĩa là:",
+        "options": [
+            "Em bị bệnh",
+            "Cơ thể em đang lớn và phát triển bình thường",
+            "Cần phải giấu mọi người",
+            "Không nên nói với ai"
+        ],
+        "correct": 1,
+        "explanation": "Những thay đổi này là dấu hiệu dậy thì quá trình tự nhiên khi cơ thể trưởng thành. Biết điều này giúp em không sợ hãi và chuẩn bị chăm sóc bản thân tốt hơn. Nếu có thắc mắc, em nên hỏi người lớn đáng tin để được giải thích rõ hơn."
+    },
+    {
+        "question": "Em nên làm gì nếu ai đó chạm vào người em khiến em thấy khó chịu hoặc sợ hãi?",
+        "options": [
+            "Giữ im lặng vì sợ bị la",
+            "Nói “Không!” và kể ngay cho cha mẹ, thầy cô",
+            "Bỏ qua vì chuyện nhỏ",
+            "Giấu kín để không ai biết"
+        ],
+        "correct": 1,
+        "explanation": "Bảo vệ bản thân là ưu tiên; nói “Không” rõ ràng và báo cho người lớn giúp đảm bảo an toàn và can thiệp kịp thời. Giấu kín có thể khiến hành vi lạm dụng tiếp tục. Người lớn có trách nhiệm giúp em và xử lý tình huống."
+    },
+    {
+        "question": "Phần cơ thể nào được gọi là “vùng riêng tư” mà chỉ mình em được chạm vào khi vệ sinh hoặc tắm rửa?",
+        "options": [
+            "Ngực, mông và vùng giữa hai chân",
+            "Tay và chân",
+            "Mặt và tóc",
+            "Vai và đầu gối"
+        ],
+        "correct": 0,
+        "explanation": "Vùng riêng tư là những phần cơ thể nhạy cảm, không ai có quyền chạm trừ khi để chăm sóc y tế bởi người lớn đáng tin và trong hoàn cảnh phù hợp. Biết giới hạn này giúp em nhận diện và nói “Không” khi có hành vi xâm phạm. Đây cũng là cơ sở để phòng tránh lạm dụng."
+    },
+    {
+        "question": "Khi bạn khác giới muốn ôm hoặc nắm tay, em nên:",
+        "options": [
+            "Từ chối nếu em cảm thấy không thoải mái",
+            "Cười cho qua",
+            "Đồng ý vì không muốn mất lòng",
+            "Giữ im lặng"
+        ],
+        "correct": 0,
+        "explanation": "Quyền quyết định về cơ thể của chính mình là quan trọng — em có quyền từ chối nếu không thoải mái. Tôn trọng giới hạn của bản thân là cách bảo vệ chính mình và dạy người khác cách tôn trọng em. Nếu bị ép buộc, em cần nói với người lớn đáng tin."
+    },
+    {
+        "question": "Nếu có ai đó nhắn tin, gửi hình ảnh không phù hợp cho em, em nên:",
+        "options": [
+            "Xem thử vì tò mò",
+            "Không xem và nói ngay với người lớn đáng tin cậy",
+            "Gửi cho bạn bè cùng xem",
+            "Xóa đi và giả vờ không có gì"
+        ],
+        "correct": 1,
+        "explanation": "Nội dung không phù hợp có thể gây hại về tinh thần và an toàn; không nên xem hay chia sẻ nó. Thông báo cho người lớn giúp xử lý và bảo vệ em khỏi rủi ro tiếp theo. Giấu kín có thể làm kẻ xấu tiếp tục hành vi."
+    },
+    {
+        "question": "Khi ở nơi công cộng (như nhà vệ sinh, phòng thay đồ), em nên:",
+        "options": [
+            "Đóng cửa, không để người khác nhìn thấy",
+            "Rủ bạn vào cùng",
+            "Dùng điện thoại chụp hình",
+            "Ở đó càng lâu càng tốt"
+        ],
+        "correct": 0,
+        "explanation": "Giữ quyền riêng tư bằng cách đóng cửa và thay đồ trong không gian riêng giúp bảo vệ bản thân. Không rủ người khác vào nếu đó là nơi riêng tư của từng người, và tuyệt đối không chụp hình. Hành vi tôn trọng quyền riêng tư của bản thân và người khác rất quan trọng."
+    },
+    {
+        "question": "Khi nói chuyện về giới tính, em nên:",
+        "options": [
+            "Nói bừa với bạn để tỏ ra hiểu biết",
+            "Hỏi người lớn, thầy cô hoặc chuyên gia",
+            "Tra mạng không kiểm chứng",
+            "Né tránh vì xấu hổ"
+        ],
+        "correct": 1,
+        "explanation": "Người lớn đáng tin và chuyên gia cung cấp thông tin chính xác, phù hợp với lứa tuổi; internet không kiểm soát có thể sai lệch. Hỏi một người tin cậy giúp em hiểu đúng, cảm thấy an toàn và chuẩn bị cho thay đổi cơ thể. Tránh nói bừa để không lan truyền thông tin sai."
+    },
+    {
+        "question": "Tôn trọng người khác về giới tính nghĩa là:",
+        "options": [
+            "Không trêu chọc, không kỳ thị bạn khác giới hoặc bạn có đặc điểm khác mình",
+            "Cười khi thấy ai bị chọc ghẹo",
+            "Lan truyền tin đồn",
+            "Cố tình chọc bạn khác giới"
+        ],
+        "correct": 0,
+        "explanation": "Tôn trọng giới tính giúp xã hội công bằng hơn và bảo vệ quyền lợi của mọi người. Trêu chọc hay kỳ thị gây tổn thương dài lâu và có thể dẫn đến bắt nạt. Học tôn trọng từ nhỏ giúp xây dựng môi trường an toàn và thân thiện."
+    },
+    {
+        "question": "Khi có cảm xúc lạ (thích một bạn khác giới), điều nên làm là:",
+        "options": [
+            "Bình tĩnh, xem đó là điều bình thường khi lớn lên",
+            "Giấu vì xấu hổ",
+            "Trêu chọc người đó",
+            "Khoe với bạn bè"
+        ],
+        "correct": 0,
+        "explanation": "Thích một bạn khác giới là phản ứng tự nhiên khi phát triển; bình tĩnh giúp em xử lý cảm xúc một cách tôn trọng. Nói chuyện với người lớn nếu cần lời khuyên, và tránh hành vi làm tổn thương người khác. Khoe khoang hay trêu chọc có thể gây rắc rối."
+    },
+    {
+        "question": "Việc giữ gìn vệ sinh cơ thể (thay đồ lót, tắm rửa, rửa tay) có ý nghĩa gì?",
+        "options": [
+            "Giúp cơ thể sạch sẽ, khỏe mạnh và tự tin",
+            "Chỉ để đẹp hơn",
+            "Không quan trọng",
+            "Là việc của người lớn"
+        ],
+        "correct": 0,
+        "explanation": "Vệ sinh cá nhân phòng tránh bệnh tật, giữ da và cơ thể khỏe mạnh, và giúp em cảm thấy tự tin khi giao tiếp. Đây là thói quen tự quản bản thân quan trọng khi lớn lên. Người lớn có thể hướng dẫn kỹ thuật đúng nhưng việc thực hiện là của em."
+    }
 ];
 
 let currentQuestion = 0;
@@ -1051,10 +1051,10 @@ function unlockAudioOnce() {
         if (!webAudioCtx && window.AudioContext) {
             webAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (webAudioCtx.state === 'suspended') {
-                webAudioCtx.resume().catch(() => {});
+                webAudioCtx.resume().catch(() => { });
             }
         }
-    } catch (_) {}
+    } catch (_) { }
 }
 
 document.addEventListener('click', unlockAudioOnce, { once: true, passive: true });
@@ -1094,7 +1094,7 @@ function tryNextApplauseSource() {
             applauseAudio.play().catch(() => playChimeFallback());
             return;
         }
-    } catch (_) {}
+    } catch (_) { }
     playChimeFallback();
 }
 
@@ -1116,7 +1116,7 @@ function playChimeFallback() {
         osc.connect(gain).connect(webAudioCtx.destination);
         osc.start(now);
         osc.stop(now + 0.5);
-    } catch (_) {}
+    } catch (_) { }
 }
 
 // Floating smile celebration
@@ -1139,16 +1139,16 @@ function showSmileCelebration() {
 
 function updateQuestionSetDisplay() {
     const currentQuestionSetQuestions = getCurrentQuestionSetQuestions();
-    
-    console.log('Current question set:', currentQuestionSet);
+
+    console.log('updateQuestionSetDisplay Current question set:', currentQuestionSet);
     console.log('Current question:', currentQuestion);
     console.log('Questions in set:', currentQuestionSetQuestions);
-    
+
     if (!currentQuestionSetQuestions || currentQuestionSetQuestions.length === 0) {
         console.error('Question set data not available');
         return;
     }
-    
+
     if (currentQuestion >= currentQuestionSetQuestions.length) {
         console.error('Question index out of bounds:', currentQuestion, '>=', currentQuestionSetQuestions.length);
         return;
@@ -1208,14 +1208,16 @@ function setupQuestionSetEventListeners() {
         if (e.target.closest('.quiz-option')) {
             const selectedOption = e.target.closest('.quiz-option');
             const selectedAnswer = selectedOption.getAttribute('data-answer');
-            const correctAnswer = String.fromCharCode(65 + quizData[currentQuestion].correct);
-            
+            const quizDataIndex = currentQuestion + (currentQuestionSet * QUESTION_SET_SIZE);
+            const correctAnswer = String.fromCharCode(65 + quizData[quizDataIndex].correct);
+
             // Debug logging
-            console.log('Question:', quizData[currentQuestion].question);
-            console.log('Correct index:', quizData[currentQuestion].correct);
+            console.log('Index:', quizDataIndex);
+            console.log('Question:', quizData[quizDataIndex].question);
+            console.log('Correct index:', quizData[quizDataIndex].correct);
             console.log('Correct answer:', correctAnswer);
             console.log('Selected answer:', selectedAnswer);
-            
+
             // Disable all options
             document.querySelectorAll('.quiz-option').forEach(option => {
                 option.disabled = true;
@@ -1233,46 +1235,52 @@ function setupQuestionSetEventListeners() {
                 feedbackContent.innerHTML = `
                     <div class="feedback-icon">🎉</div>
                     <h4>Tuyệt vời! Bạn đã trả lời chính xác</h4>
-                    <p>${quizData[currentQuestion].explanation}</p>
+                    <p>${quizData[quizDataIndex].explanation}</p>
                 `;
 
                 // Play applause sound and show smile animation
-                try { playApplause(); } catch(e) {}
+                try { playApplause(); } catch (e) { }
                 showSmileCelebration();
             } else {
                 feedbackContent.innerHTML = `
                     <div class="feedback-icon">💡</div>
                     <h4>Bạn đã cố gắng rồi, mình thử suy nghĩ thêm chút nữa nhé!</h4>
-                    <p>${quizData[currentQuestion].explanation}</p>
+                    <p>${quizData[quizDataIndex].explanation}</p>
                 `;
             }
-            
+
             quizFeedback.style.display = 'block';
         }
     });
 
-    nextQuestionBtn.addEventListener('click', () => {
-        currentQuestion++;
-        const currentQuestionSetQuestions = getCurrentQuestionSetQuestions();
-        
-        if (currentQuestion < currentQuestionSetQuestions.length) {
-            updateQuestionSetDisplay();
-        } else {
-            // Question set completed, show results
-            showQuestionSetResults();
-        }
-    });
+
+    // Trước khi add mới:
+    nextQuestionBtn.removeEventListener('click', nextQuestionHandler);
+    nextQuestionBtn.addEventListener('click', nextQuestionHandler);
 }
 
-        function showQuestionSetResults() {
-            const quizContainer = document.getElementById('quizContainer');
-            const currentQuestionSetQuestions = getCurrentQuestionSetQuestions();
-            const percentage = Math.round((score / currentQuestionSetQuestions.length) * 100);
-            
-            // Save question set results to localStorage
-            userProgress.completeQuestionSet(currentQuestionSet, percentage);
-            
-            quizContainer.innerHTML = `
+function nextQuestionHandler() {
+    console.log(`nextQuestionBtn click: ${currentQuestion}`);
+    currentQuestion++;
+    const currentQuestionSetQuestions = getCurrentQuestionSetQuestions();
+
+    if (currentQuestion < currentQuestionSetQuestions.length) {
+        updateQuestionSetDisplay();
+    } else {
+        // Question set completed, show results
+        showQuestionSetResults();
+    }
+}
+
+function showQuestionSetResults() {
+    const quizContainer = document.getElementById('quizContainer');
+    const currentQuestionSetQuestions = getCurrentQuestionSetQuestions();
+    const percentage = Math.round((score / currentQuestionSetQuestions.length) * 100);
+
+    // Save question set results to localStorage
+    userProgress.completeQuestionSet(currentQuestionSet, percentage);
+
+    quizContainer.innerHTML = `
                 <div class="quiz-results">
                     <div class="results-icon">
                         <i class="fas fa-trophy"></i>
@@ -1283,9 +1291,9 @@ function setupQuestionSetEventListeners() {
                         <span class="score-percentage">${percentage}%</span>
                     </div>
                     <p class="score-message">
-                        ${percentage >= 80 ? 'Xuất sắc! Bạn hiểu rất tốt về cảm xúc!' : 
-                          percentage >= 60 ? 'Tốt! Hãy tiếp tục học hỏi thêm!' : 
-                          'Hãy thử lại để cải thiện kết quả!'}
+                        ${percentage >= 80 ? 'Xuất sắc! Bạn hiểu rất tốt về cảm xúc!' :
+            percentage >= 60 ? 'Tốt! Hãy tiếp tục học hỏi thêm!' :
+                'Hãy thử lại để cải thiện kết quả!'}
                     </p>
                     <div class="points-earned">
                         <i class="fas fa-star"></i>
@@ -1297,24 +1305,24 @@ function setupQuestionSetEventListeners() {
                     </div>
                 </div>
             `;
-            
-            // Add event listeners for buttons
-            const backToSelectionBtn = document.getElementById('backToSelectionBtn');
-            if (backToSelectionBtn) {
-                backToSelectionBtn.addEventListener('click', backToSelection);
-            }
-            
-            const restartBtn = document.getElementById('restartQuizBtn');
-            if (restartBtn) {
-                restartBtn.addEventListener('click', restartQuestionSet);
-            }
-        }
+
+    // Add event listeners for buttons
+    const backToSelectionBtn = document.getElementById('backToSelectionBtn');
+    if (backToSelectionBtn) {
+        backToSelectionBtn.addEventListener('click', backToSelection);
+    }
+
+    const restartBtn = document.getElementById('restartQuizBtn');
+    if (restartBtn) {
+        restartBtn.addEventListener('click', restartQuestionSet);
+    }
+}
 
 function nextQuestionSet() {
     currentQuestionSet++;
     currentQuestion = 0;
     score = 0;
-    
+
     // Reset quiz container to original state
     const quizContainer = document.getElementById('quizContainer');
     quizContainer.innerHTML = `
@@ -1365,13 +1373,13 @@ function nextQuestionSet() {
             </div>
         </div>
     `;
-    
+
     // Add back to start button event listener
     const backBtn = document.getElementById('backToStartBtn');
     if (backBtn) {
         backBtn.addEventListener('click', backToSelection);
     }
-    
+
     // Update quiz display and setup event listeners
     updateQuizDisplay();
     setupQuizEventListeners();
@@ -1391,7 +1399,7 @@ function completeAllQuestionSets() {
             <button class="restart-all-btn" id="restartAllBtn">Bắt đầu lại từ đầu</button>
         </div>
     `;
-    
+
     const restartAllBtn = document.getElementById('restartAllBtn');
     if (restartAllBtn) {
         restartAllBtn.addEventListener('click', () => {
@@ -1408,15 +1416,16 @@ function backToSelection() {
     // Show quiz selection
     const quizSelection = document.querySelector('.quiz-selection');
     const quizContainer = document.getElementById('quizContainer');
-	
+
     if (quizSelection) {
         quizSelection.style.display = 'block';
     }
-	
+
     if (quizContainer) {
         quizContainer.style.display = 'none';
     }
-	    
+
+    restartQuestionSet();
     // Update UI to reflect current state
     userProgress.updateUI();
 }
@@ -1424,7 +1433,7 @@ function backToSelection() {
 function restartQuestionSet() {
     currentQuestion = 0;
     score = 0;
-    
+
     // Reset quiz container to original state
     const quizContainer = document.getElementById('quizContainer');
     quizContainer.innerHTML = `
@@ -1475,13 +1484,13 @@ function restartQuestionSet() {
             </div>
         </div>
     `;
-    
+
     // Add back to start button event listener
     const backBtn = document.getElementById('backToStartBtn');
     if (backBtn) {
         backBtn.addEventListener('click', backToSelection);
     }
-    
+
     // Re-initialize quiz
     updateQuizDisplay();
     setupQuizEventListeners();
@@ -1498,19 +1507,19 @@ function initStories() {
     });
 }
 
-        function openStory(storyId) {
-            if (!storyId) {
-                console.error('Story ID is required');
-                return;
-            }
-            
-            // Save story read to localStorage
-            userProgress.readStory(storyId);
-            
-            const stories = {
-                '1': {
-                    title: 'Chú Gấu và Cảm xúc',
-                    content: `
+function openStory(storyId) {
+    if (!storyId) {
+        console.error('Story ID is required');
+        return;
+    }
+
+    // Save story read to localStorage
+    userProgress.readStory(storyId);
+
+    const stories = {
+        '1': {
+            title: 'Chú Gấu và Cảm xúc',
+            content: `
                         <div class="story-content-full">
                             <h3>Chú Gấu và Cảm xúc</h3>
                             <div class="story-text">
@@ -1538,10 +1547,10 @@ function initStories() {
                             </div>
                         </div>
                     `
-                },
-                '2': {
-                    title: 'Bạn bè và Sự chia sẻ',
-                    content: `
+        },
+        '2': {
+            title: 'Bạn bè và Sự chia sẻ',
+            content: `
                         <div class="story-content-full">
                             <h3>Bạn bè và Sự chia sẻ</h3>
                             <div class="story-text">
@@ -1569,10 +1578,10 @@ function initStories() {
                             </div>
                         </div>
                     `
-                },
-                '3': {
-                    title: 'Vượt qua Nỗi sợ',
-                    content: `
+        },
+        '3': {
+            title: 'Vượt qua Nỗi sợ',
+            content: `
                         <div class="story-content-full">
                             <h3>Vượt qua Nỗi sợ</h3>
                             <div class="story-text">
@@ -1600,10 +1609,10 @@ function initStories() {
                             </div>
                         </div>
                     `
-                },
-                '4': {
-                    title: 'Làm việc nhóm',
-                    content: `
+        },
+        '4': {
+            title: 'Làm việc nhóm',
+            content: `
                         <div class="story-content-full">
                             <h3>Làm việc nhóm</h3>
                             <div class="story-text">
@@ -1629,10 +1638,10 @@ function initStories() {
                             </div>
                         </div>
                     `
-                },
-                '5': {
-                    title: 'Sáng tạo và Tưởng tượng',
-                    content: `
+        },
+        '5': {
+            title: 'Sáng tạo và Tưởng tượng',
+            content: `
                         <div class="story-content-full">
                             <h3>Sáng tạo và Tưởng tượng</h3>
                             <div class="story-text">
@@ -1658,10 +1667,10 @@ function initStories() {
                             </div>
                         </div>
                     `
-                },
-                '6': {
-                    title: 'Trách nhiệm và Tự lập',
-                    content: `
+        },
+        '6': {
+            title: 'Trách nhiệm và Tự lập',
+            content: `
                         <div class="story-content-full">
                             <h3>Trách nhiệm và Tự lập</h3>
                             <div class="story-text">
@@ -1687,24 +1696,24 @@ function initStories() {
                             </div>
                         </div>
                     `
-                }
-            };
-
-            const story = stories[storyId];
-            if (story) {
-                showStoryModal(story.title, story.content);
-            } else {
-                console.error(`Story with ID ${storyId} not found`);
-                alert('Câu chuyện không tìm thấy. Vui lòng thử lại!');
-            }
         }
+    };
+
+    const story = stories[storyId];
+    if (story) {
+        showStoryModal(story.title, story.content);
+    } else {
+        console.error(`Story with ID ${storyId} not found`);
+        alert('Câu chuyện không tìm thấy. Vui lòng thử lại!');
+    }
+}
 
 function showStoryModal(title, content) {
     if (!title || !content) {
         console.error('Title and content are required for story modal');
         return;
     }
-    
+
     const modal = document.createElement('div');
     modal.className = 'story-modal-overlay';
     modal.innerHTML = `
@@ -1721,16 +1730,16 @@ function showStoryModal(title, content) {
             </div>
         </div>
     `;
-    
+
     document.body.appendChild(modal);
-    
+
     // Close modal
     modal.querySelectorAll('.close-story-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.body.removeChild(modal);
         });
     });
-    
+
     // Close on overlay click
     modal.addEventListener('click', (e) => {
         if (e.target === modal) {
@@ -1742,16 +1751,16 @@ function showStoryModal(title, content) {
 // Initialize everything when page loads
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Initializing Kham Pha page...');
-    
+
     // Load real data from localStorage
     userProgress.updateUI();
-    
+
     // Initialize interactive features
     initStories();
     initQuestionSetStart();
     initTopics();
     initTopicCards();
-    
+
     console.log('Kham Pha page initialized successfully!');
     console.log('Quiz selection cards found:', document.querySelectorAll('.quiz-selection-card .start-quiz-btn').length);
 });
@@ -1762,12 +1771,12 @@ function initQuestionSetStart() {
     const quizSelectionCards = document.querySelectorAll('.quiz-selection-card .start-quiz-btn');
     const quizContainer = document.getElementById('quizContainer');
     const quizSelection = document.querySelector('.quiz-selection');
-    
+
     console.log('initQuestionSetStart called');
     console.log('Found quiz selection cards:', quizSelectionCards.length);
     console.log('Quiz container found:', !!quizContainer);
     console.log('Quiz selection found:', !!quizSelection);
-    
+
     // Direct binding for existing buttons
     quizSelectionCards.forEach(button => {
         button.addEventListener('click', () => handleStartQuiz(button));
@@ -1789,25 +1798,25 @@ function initQuestionSetStart() {
     function handleStartQuiz(buttonEl) {
         const quizIndex = parseInt(buttonEl.getAttribute('data-quiz'));
         console.log('Quiz button clicked, index:', quizIndex);
-        
+
         // Set current question set
         currentQuestionSet = isNaN(quizIndex) ? 0 : quizIndex;
         currentQuestion = 0;
         score = 0;
-        
+
         console.log('Set currentQuestionSet to:', currentQuestionSet);
         console.log('Reset currentQuestion to:', currentQuestion);
-        
+
         // Highlight selected card
         document.querySelectorAll('.quiz-selection-card').forEach(card => card.classList.remove('selected'));
         const card = buttonEl.closest('.quiz-selection-card');
         if (card) card.classList.add('selected');
-        
+
         // Ensure quiz selection stays visible (do NOT hide)
         if (quizSelection) {
             quizSelection.style.removeProperty('display');
         }
-        
+
         // Show quiz container below selection
         if (quizContainer) {
             quizContainer.style.removeProperty('display');
@@ -1818,7 +1827,7 @@ function initQuestionSetStart() {
             }, 0);
             console.log('Shown quiz container below selection');
         }
-        
+
         // Initialize question set
         console.log('Initializing question set...');
         initQuestionSet();
@@ -1831,7 +1840,7 @@ function initTopicCards() {
     const topicCardsGrid = document.getElementById('topicCardsGrid');
     const storiesList = document.getElementById('storiesList');
     const backToTopicsBtn = document.getElementById('backToTopicsBtn');
-    
+
     // Topic data mapping
     const topicData = {
         'quan-ly-cam-xuc': {
@@ -2590,19 +2599,19 @@ function initTopicCards() {
             ]
         }
     };
-    
+
     // Handle topic card clicks
     topicCards.forEach(card => {
         card.addEventListener('click', () => {
             const topicId = card.getAttribute('data-topic');
             const topic = topicData[topicId];
-            
+
             if (topic) {
                 showStoriesForTopic(topicId, topic);
             }
         });
     });
-    
+
     // Handle back to topics button
     if (backToTopicsBtn) {
         backToTopicsBtn.addEventListener('click', () => {
@@ -2610,24 +2619,24 @@ function initTopicCards() {
             storiesList.style.display = 'none';
         });
     }
-    
+
     function showStoriesForTopic(topicId, topic) {
         // Hide topic cards grid
         topicCardsGrid.style.display = 'none';
-        
+
         // Show stories list
         storiesList.style.display = 'block';
-        
+
         // Update title
         const storiesListTitle = document.getElementById('storiesListTitle');
         if (storiesListTitle) {
             storiesListTitle.textContent = `Những câu chuyện trong chủ đề ${topic.title}`;
         }
-        
-               // Render stories
-               const storiesGrid = document.getElementById('storiesGrid');
-               if (storiesGrid) {
-                   storiesGrid.innerHTML = topic.stories.map(story => `
+
+        // Render stories
+        const storiesGrid = document.getElementById('storiesGrid');
+        if (storiesGrid) {
+            storiesGrid.innerHTML = topic.stories.map(story => `
                        <div class="story-card flip-in-y hover-glow" data-story="${story.id}">
                            <div class="story-cover">
                                <div class="story-icon">
@@ -2641,7 +2650,7 @@ function initTopicCards() {
                            <button class="read-story-btn">Đọc ngay</button>
                        </div>
                    `).join('');
-            
+
             // Add event listeners to story cards
             storiesGrid.querySelectorAll('.story-card').forEach(card => {
                 card.addEventListener('click', () => {
@@ -2727,7 +2736,7 @@ function initTopics() {
                         <p>${item.description || ''}</p>
                         <div class="item-actions">
                             ${isVideo ? `<a class="btn" href="${item.url}" target="_blank" rel="noopener">Xem video</a>`
-                                      : `<button class="btn read-item" data-title="${encodeURIComponent(item.title || '')}" data-content="${encodeURIComponent(item.content || '')}">Đọc</button>`}
+                        : `<button class="btn read-item" data-title="${encodeURIComponent(item.title || '')}" data-content="${encodeURIComponent(item.content || '')}">Đọc</button>`}
                         </div>
                     </div>
                 </div>`;
@@ -2738,7 +2747,7 @@ function initTopics() {
                 btn.addEventListener('click', () => {
                     const t = decodeURIComponent(btn.getAttribute('data-title') || '');
                     const c = decodeURIComponent(btn.getAttribute('data-content') || '');
-                    showStoryModal(t || 'Câu chuyện', `<div class="story-content-full"><div class="story-text"><p>${c.replace(/\n/g,'</p><p>')}</p></div></div>`);
+                    showStoryModal(t || 'Câu chuyện', `<div class="story-content-full"><div class="story-text"><p>${c.replace(/\n/g, '</p><p>')}</p></div></div>`);
                 });
             });
         } catch (e) {
@@ -2757,14 +2766,14 @@ class ScrollAnimations {
         this.observer = new IntersectionObserver(this.handleIntersection.bind(this), this.observerOptions);
         this.init();
     }
-    
+
     init() {
         // Observe all animated elements
         const animatedElements = document.querySelectorAll('.fade-in, .slide-in-left, .slide-in-right, .scale-in, .bounce-in, .rotate-in, .flip-in-x, .flip-in-y, .zoom-in, .slide-up, .slide-down, .elastic-in, .wiggle-in, .bounce-jump, .wiggle-bounce, .hop-skip, .spring-bounce');
         animatedElements.forEach(element => {
             this.observer.observe(element);
         });
-        
+
         // Add smooth scroll to all anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -2779,12 +2788,12 @@ class ScrollAnimations {
             });
         });
     }
-    
+
     handleIntersection(entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
-                
+
                 // Add stagger effect for child elements
                 const staggerElements = entry.target.querySelectorAll('.stagger-1, .stagger-2, .stagger-3, .stagger-4, .stagger-5');
                 staggerElements.forEach((element, index) => {
@@ -2792,7 +2801,7 @@ class ScrollAnimations {
                         element.classList.add('visible');
                     }, index * 100);
                 });
-                
+
                 // Stop observing this element
                 this.observer.unobserve(entry.target);
             }
@@ -2805,48 +2814,48 @@ class InteractiveEffects {
     constructor() {
         this.init();
     }
-    
+
     init() {
         // Add hover effects to buttons
         this.addButtonEffects();
-        
+
         // Add click effects
         this.addClickEffects();
-        
+
         // Add typing effect to hero title
         this.addTypingEffect();
-        
+
         // Add parallax scrolling
         this.addParallaxEffect();
     }
-    
+
     addButtonEffects() {
         // Add ripple effect to buttons
         document.querySelectorAll('button, .btn').forEach(button => {
-            button.addEventListener('click', function(e) {
+            button.addEventListener('click', function (e) {
                 const ripple = document.createElement('span');
                 const rect = this.getBoundingClientRect();
                 const size = Math.max(rect.width, rect.height);
                 const x = e.clientX - rect.left - size / 2;
                 const y = e.clientY - rect.top - size / 2;
-                
+
                 ripple.style.width = ripple.style.height = size + 'px';
                 ripple.style.left = x + 'px';
                 ripple.style.top = y + 'px';
                 ripple.classList.add('ripple');
-                
+
                 this.appendChild(ripple);
-                
+
                 setTimeout(() => {
                     ripple.remove();
                 }, 600);
             });
         });
     }
-    
+
     addClickEffects() {
         // Add shake effect on wrong answers
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (e.target.classList.contains('quiz-option') && e.target.classList.contains('wrong')) {
                 e.target.classList.add('shake');
                 setTimeout(() => {
@@ -2855,17 +2864,17 @@ class InteractiveEffects {
             }
         });
     }
-    
+
     addTypingEffect() {
         // Typing effect disabled for page title as requested
         // Only apply to other elements if needed
     }
-    
+
     addParallaxEffect() {
         window.addEventListener('scroll', () => {
             const scrolled = window.pageYOffset;
             const parallaxElements = document.querySelectorAll('.float');
-            
+
             parallaxElements.forEach((element, index) => {
                 const speed = 0.5 + (index * 0.1);
                 element.style.transform = `translateY(${scrolled * speed}px)`;
@@ -2875,7 +2884,7 @@ class InteractiveEffects {
 }
 
 // Initialize scroll animations when page loads
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     new ScrollAnimations();
     new InteractiveEffects();
 });
