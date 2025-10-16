@@ -172,25 +172,66 @@
     margin: 0 auto;
 }
 
-/* Relax tabs */
 .relax-tabs {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    margin: 10px 0 24px;
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
+
+/* Nút cơ bản */
 .relax-tab-btn {
-    padding: 10px 18px;
-    border-radius: 999px;
-    border: 2px solid #ff8c42;
-    background: #fff;
-    color: #ff8c42;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all .2s ease;
+  width: 180px;
+  height: 180px;
+  border-radius: 36px;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  font-weight: 700;
+  font-size: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.relax-tab-btn:hover { box-shadow: 0 6px 16px rgba(255,140,66,.25); transform: translateY(-1px); }
-.relax-tab-btn.active { background: linear-gradient(135deg,#ff8c42,#ff6b9d); color: #fff; border-color: transparent; }
+
+/* Icon */
+.relax-tab-btn .icon {
+  font-size: 48px;
+  margin-bottom: 8px;
+}
+
+/* Chữ */
+.relax-tab-btn .label {
+  line-height: 1.1;
+}
+
+/* Hiệu ứng hover */
+.relax-tab-btn:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Màu riêng cho từng nút */
+.relax-tab-btn.game {
+  background: linear-gradient(135deg, #ffb347, #ff8c42);
+}
+
+.relax-tab-btn.paint {
+  background: linear-gradient(135deg, #ff7bbd, #ff5fa2);
+}
+
+.relax-tab-btn.music {
+  background: linear-gradient(135deg, #4db5ff, #2d9aff);
+}
+
+/* Khi được chọn (active) — đậm hơn một chút */
+.relax-tab-btn.active {
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
 
 /* Music player */
 .music-player { padding: 10px; background:#fff; border:1px solid #f1f5f9; border-radius:12px; }

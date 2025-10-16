@@ -79,10 +79,21 @@
                 <div class="features-content">
                     
                     <!-- Relax Tabs -->
-                    <div class="relax-tabs">
-                        <button class="relax-tab-btn active" data-target="#relaxGames">Trò chơi</button>
-                        <button class="relax-tab-btn" data-target="#relaxDrawing">Vẽ tranh</button>
-                        <button class="relax-tab-btn" data-target="#relaxMusic">Nghe nhạc</button>
+                   <div class="relax-tabs">
+                    <button class="relax-tab-btn game active" data-target="#relaxGames">
+                        <div class="icon">🎮</div>
+                        <div class="label">Trò<br>chơi</div>
+                    </button>
+
+                    <button class="relax-tab-btn paint" data-target="#relaxDrawing">
+                        <div class="icon">🎨</div>
+                        <div class="label">Vẽ<br>tranh</div>
+                    </button>
+
+                    <button class="relax-tab-btn music" data-target="#relaxMusic">
+                        <div class="icon">🎵</div>
+                        <div class="label">Nghe<br>nhạc</div>
+                    </button>
                     </div>
 
                     <!-- Games Section -->
@@ -181,7 +192,7 @@
 
 
                         <!-- Piano Game -->
-                        <div class="game-card piano-game-expanded mt-1" id="pianoGame">
+                        <div class="game-card piano-game-expanded" style="top:30px" id="pianoGame">
                             <div class="game-header">
                                 <div class="game-icon">
                                     <i class="fas fa-music"></i>
@@ -210,7 +221,7 @@
 
                     <!-- Drawing Section (hidden initially) -->
                     <div class="relax-panel" id="relaxDrawing" style="display: none;">
-                        <div class="game-card">
+                        <div class="game-card" style="top:50px">
                             <div class="game-header">
                                 <div class="game-icon"><i class="fas fa-paint-brush"></i></div>
                                 <h3>Bức tranh mơ ước</h3>
@@ -224,7 +235,7 @@
 
                     <!-- Music Section (hidden initially) -->
                     <div class="relax-panel" id="relaxMusic" style="display: none;">
-                        <div class="game-card">
+                        <div class="game-card" style="top:50px">
                             <div class="game-header">
                                 <div class="game-icon"><i class="fas fa-music"></i></div>
                                 <h3>Nghe nhạc thư giãn</h3>
