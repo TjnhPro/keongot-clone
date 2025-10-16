@@ -1847,7 +1847,7 @@ function initTopicCards() {
             title: 'Quản lý cảm xúc',
             stories: [
                 {
-                    id: '1',
+                    id: '101',
                     title: 'Chú Gấu và Cảm xúc',
                     description: 'Một câu chuyện về cách chú gấu học cách quản lý cảm xúc của mình',
                     content: `
@@ -1877,7 +1877,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '6',
+                    id: '102',
                     title: 'Cô Bé và Cơn Giận',
                     description: 'Học cách kiểm soát cơn giận và tìm cách giải tỏa cảm xúc tích cực',
                     content: `
@@ -1909,7 +1909,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '7',
+                    id: '103',
                     title: 'Chú Thỏ và Nỗi Lo',
                     description: 'Học cách đối phó với lo lắng và tìm sự bình yên trong tâm hồn',
                     content: `
@@ -1941,7 +1941,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '8',
+                    id: '104',
                     title: 'Cậu Bé và Niềm Vui',
                     description: 'Học cách tìm niềm vui trong những điều nhỏ bé và lan tỏa hạnh phúc',
                     content: `
@@ -1973,7 +1973,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '9',
+                    id: '105',
                     title: 'Cô Gái và Sự Tự Tin',
                     description: 'Học cách xây dựng lòng tự tin và đối mặt với nỗi sợ hãi',
                     content: `
@@ -2014,7 +2014,7 @@ function initTopicCards() {
             title: 'Giao tiếp và ứng xử',
             stories: [
                 {
-                    id: '2',
+                    id: '201',
                     title: 'Bạn bè và Sự chia sẻ',
                     description: 'Học cách chia sẻ cảm xúc với bạn bè một cách tích cực',
                     content: `
@@ -2044,7 +2044,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '10',
+                    id: '202',
                     title: 'Lời Xin Lỗi Chân Thành',
                     description: 'Học cách xin lỗi và tha thứ một cách chân thành',
                     content: `
@@ -2072,7 +2072,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '11',
+                    id: '203',
                     title: 'Lắng Nghe Tích Cực',
                     description: 'Học cách lắng nghe và hiểu cảm xúc của người khác',
                     content: `
@@ -2102,7 +2102,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '12',
+                    id: '204',
                     title: 'Giải Quyết Xung Đột',
                     description: 'Học cách giải quyết mâu thuẫn một cách hòa bình',
                     content: `
@@ -2132,7 +2132,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '13',
+                    id: '205',
                     title: 'Lời Khen Chân Thành',
                     description: 'Học cách khen ngợi và khuyến khích người khác',
                     content: `
@@ -2167,7 +2167,7 @@ function initTopicCards() {
             title: 'Gia đình',
             stories: [
                 {
-                    id: '3',
+                    id: '301',
                     title: 'Tình cảm gia đình',
                     description: 'Những câu chuyện về tình cảm gia đình và mối quan hệ',
                     content: `
@@ -2195,7 +2195,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '14',
+                    id: '302',
                     title: 'Bữa cơm gia đình',
                     description: 'Học cách trân trọng những khoảnh khắc bên gia đình',
                     content: `
@@ -2223,7 +2223,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '15',
+                    id: '303',
                     title: 'Em trai và Tình anh em',
                     description: 'Học cách yêu thương và chăm sóc em trai',
                     content: `
@@ -2251,7 +2251,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '16',
+                    id: '304',
                     title: 'Bố mẹ và Công việc',
                     description: 'Hiểu và cảm thông với công việc của bố mẹ',
                     content: `
@@ -2279,7 +2279,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '17',
+                    id: '305',
                     title: 'Ông bà và Tình yêu thương',
                     description: 'Học cách yêu thương và kính trọng ông bà',
                     content: `
@@ -2312,7 +2312,7 @@ function initTopicCards() {
             title: 'Tư duy tích cực và kiểm soát hành vi',
             stories: [
                 {
-                    id: '4',
+                    id: '401',
                     title: 'Vượt qua Nỗi sợ',
                     description: 'Một câu chuyện về cách đối mặt và vượt qua những nỗi sợ hãi',
                     content: `
@@ -2340,7 +2340,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '18',
+                    id: '402',
                     title: 'Tư duy tích cực',
                     description: 'Học cách suy nghĩ tích cực trong mọi tình huống',
                     content: `
@@ -2368,7 +2368,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '19',
+                    id: '403',
                     title: 'Kiểm soát cơn giận',
                     description: 'Học cách kiểm soát cơn giận một cách hiệu quả',
                     content: `
@@ -2396,7 +2396,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '20',
+                    id: '404',
                     title: 'Tự tin và Lòng tự trọng',
                     description: 'Học cách xây dựng lòng tự tin và tự trọng',
                     content: `
@@ -2424,7 +2424,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '21',
+                    id: '405',
                     title: 'Kiên trì và Không bỏ cuộc',
                     description: 'Học cách kiên trì và không bỏ cuộc khi gặp khó khăn',
                     content: `
@@ -2457,7 +2457,7 @@ function initTopicCards() {
             title: 'Sự chia sẻ',
             stories: [
                 {
-                    id: '5',
+                    id: '501',
                     title: 'Làm việc nhóm',
                     description: 'Học cách hợp tác và làm việc cùng bạn bè để đạt được mục tiêu chung',
                     content: `
@@ -2485,7 +2485,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '22',
+                    id: '502',
                     title: 'Chia sẻ đồ chơi',
                     description: 'Học cách chia sẻ đồ chơi và đồ dùng với bạn bè',
                     content: `
@@ -2513,7 +2513,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '23',
+                    id: '503',
                     title: 'Chia sẻ kiến thức',
                     description: 'Học cách chia sẻ kiến thức và giúp đỡ bạn bè học tập',
                     content: `
@@ -2541,7 +2541,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '24',
+                    id: '504',
                     title: 'Chia sẻ cảm xúc',
                     description: 'Học cách chia sẻ cảm xúc và tâm sự với người thân',
                     content: `
@@ -2569,7 +2569,7 @@ function initTopicCards() {
                     image: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=300&h=200&fit=crop&crop=center'
                 },
                 {
-                    id: '25',
+                    id: '505',
                     title: 'Chia sẻ thời gian',
                     description: 'Học cách chia sẻ thời gian và quan tâm đến người khác',
                     content: `

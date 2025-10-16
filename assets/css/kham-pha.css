@@ -2279,7 +2279,7 @@ button:hover, .btn:hover {
 
 .story-cover {
     position: relative;
-    height: 120px;
+    aspect-ratio: 16/9;
     background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
     display: flex;
     align-items: center;
@@ -2290,29 +2290,107 @@ button:hover, .btn:hover {
     transition: all 0.3s ease;
 }
 
-.story-card[data-story="1"] .story-cover {
-    background-image: url('https://gaubongonline.vn/wp-content/uploads/2019/01/nguon-goc-gau-teddy.jpg');
+.story-card[data-story="101"] .story-cover {
+    background-image: url('/assets/images/khampha/camsuc/1.jpg');
 }
 
-.story-card[data-story="2"] .story-cover {
-    background-image: url('https://icdn.dantri.com.vn/dansinh/2024/04/27/3265399-day-con-co-thoi-quen-chia-0-1714197899616.jpg');
+.story-card[data-story="102"] .story-cover {
+    background-image: url('/assets/images/khampha/camsuc/2.jpg');
 }
 
-.story-card[data-story="3"] .story-cover {
-    background-image: url('https://thptquocgia.org/wp-content/uploads/giup-tre-vuot-qua-noi-so-mon-toan.jpg');
+.story-card[data-story="103"] .story-cover {
+    background-image: url('/assets/images/khampha/camsuc/3.jpg');
 }
 
-.story-card[data-story="4"] .story-cover {
-    background-image: url('https://upo.edu.vn/wp-content/uploads/ky-nang-song-lam-viec-nhom-cho-tre-mam-non.jpg');
+.story-card[data-story="104"] .story-cover {
+    background-image: url('/assets/images/khampha/camsuc/4.jpg');
 }
 
-.story-card[data-story="5"] .story-cover {
-    background-image: url('https://res-1.cloudinary.com/kiddi-vn/image/upload/c_limit,f_auto,h_480,q_auto,w_720/v1/kiddi-upload-journal/xxt2qjoxgddqmqadxy46');
+.story-card[data-story="105"] .story-cover {
+    background-image: url('/assets/images/khampha/camsuc/5.jpg');
 }
 
-.story-card[data-story="6"] .story-cover {
-    background-image: url('https://i-vnexpress.vnecdn.net/2019/07/29/nau-an-1204-1564335839.jpg');
+.story-card[data-story="201"] .story-cover {
+    background-image: url('/assets/images/khampha/giaotiep/1.jpg');
 }
+
+.story-card[data-story="202"] .story-cover {
+    background-image: url('/assets/images/khampha/giaotiep/2.jpg');
+}
+
+.story-card[data-story="203"] .story-cover {
+    background-image: url('/assets/images/khampha/giaotiep/3.jpg');
+}
+
+.story-card[data-story="204"] .story-cover {
+    background-image: url('/assets/images/khampha/giaotiep/4.jpg');
+}
+
+.story-card[data-story="205"] .story-cover {
+    background-image: url('/assets/images/khampha/giaotiep/5.jpg');
+}
+
+.story-card[data-story="301"] .story-cover {
+    background-image: url('/assets/images/khampha/giadinh/1.jpg');
+}
+
+.story-card[data-story="302"] .story-cover {
+    background-image: url('/assets/images/khampha/giadinh/2.jpg');
+}
+
+.story-card[data-story="303"] .story-cover {
+    background-image: url('/assets/images/khampha/giadinh/3.jpg');
+}
+
+.story-card[data-story="304"] .story-cover {
+    background-image: url('/assets/images/khampha/giadinh/4.jpg');
+}
+
+.story-card[data-story="305"] .story-cover {
+    background-image: url('/assets/images/khampha/giadinh/5.jpg');
+}
+
+.story-card[data-story="401"] .story-cover {
+    background-image: url('/assets/images/khampha/tichcuc/1.jpg');
+}
+
+.story-card[data-story="402"] .story-cover {
+    background-image: url('/assets/images/khampha/tichcuc/2.jpg');
+}
+
+.story-card[data-story="403"] .story-cover {
+    background-image: url('/assets/images/khampha/tichcuc/3.jpg');
+}
+
+.story-card[data-story="404"] .story-cover {
+    background-image: url('/assets/images/khampha/tichcuc/4.jpg');
+}
+
+.story-card[data-story="405"] .story-cover {
+    background-image: url('/assets/images/khampha/tichcuc/5.jpg');
+}
+
+.story-card[data-story="501"] .story-cover {
+    background-image: url('/assets/images/khampha/chiase/1.jpg');
+}
+
+.story-card[data-story="502"] .story-cover {
+    background-image: url('/assets/images/khampha/chiase/2.jpg');
+}
+
+.story-card[data-story="503"] .story-cover {
+    background-image: url('/assets/images/khampha/chiase/3.jpg');
+}
+
+.story-card[data-story="504"] .story-cover {
+    background-image: url('/assets/images/khampha/chiase/4.jpg');
+}
+
+.story-card[data-story="505"] .story-cover {
+    background-image: url('/assets/images/khampha/chiase/5.jpg');
+}
+
+
 
 .story-image {
     width: 100%;
