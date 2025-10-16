@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Form submissions
     if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit',async function(e) {
             e.preventDefault();
             const formData = new FormData(loginForm);
             const username = formData.get('username');
@@ -125,19 +125,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 auth.showToast('error', 'Thiếu thông tin!', 'Vui lòng điền đầy đủ tên đăng nhập và mật khẩu.');
                 return;
             }
-            
+
+            // Attempt login (await để đợi fetch từ n8n hoàn thành)
+            const success = await auth.login(username, password);
+            console.log("loginResponse:" + success);
+
             // Attempt login
-            if (auth.login(username, password)) {
+            if (success) {
                 authModal.classList.remove('active');
                 document.body.style.overflow = 'auto';
                 loginForm.reset();
                 updateUserInterface();
+
+                window.location.reload();
             }
         });
     }
 
     if (registerForm) {
-        registerForm.addEventListener('submit', function(e) {
+        registerForm.addEventListener('submit',async function(e) {
             e.preventDefault();
             const formData = new FormData(registerForm);
             const name = formData.get('name');
@@ -166,9 +172,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 auth.showToast('error', 'Tuổi không phù hợp!', 'Tuổi phải từ 6 đến 12 tuổi để sử dụng Kẹo Ngọt.');
                 return;
             }
-            
+
+            //loginBtn.disabled = true;
+            //loginBtn.textContent = 'Đang đăng nhập...';
+
+            // Attempt login (await để đợi fetch từ n8n hoàn thành)
+            const success = auth.register({ name, password, age: parseInt(age) });
+
+            //loginBtn.disabled = false;
+            //loginBtn.textContent = 'Đăng nhập';
+            console.log("registerResponse:" + success);
+           
             // Attempt registration
-            if (auth.register({ name, password, age: parseInt(age) })) {
+            if (success) {
                 authModal.classList.remove('active');
                 document.body.style.overflow = 'auto';
                 registerForm.reset();
@@ -179,6 +195,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 modalTitle.textContent = 'Đăng nhập';
                 switchText.textContent = 'Chưa có tài khoản?';
                 switchForm.textContent = 'Đăng ký ngay';
+
+
             }
         });
     }
@@ -377,6 +395,9 @@ function updateUserInterface() {
     const loginBtn = document.querySelector('.login-btn');
     const currentUser = auth.getCurrentUser();
     
+    console.log(currentUser);
+    
+
     if (currentUser) {
         // User is logged in - show logout button
         if (loginBtn) {
@@ -396,7 +417,10 @@ function updateUserInterface() {
             newLoginBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 auth.logout();
-                updateUserInterface();
+                updateUserInterface(); 
+                
+                //
+                window.location.reload();
             });
         }
     } else {

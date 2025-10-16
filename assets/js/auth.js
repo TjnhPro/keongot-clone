@@ -1,21 +1,13 @@
 // Authentication System with localStorage
 class AuthSystem {
     constructor() {
-        this.users = this.loadUsers();
+        this.apiBase = 'https://n8n.brandipreports.com/webhook/keongot';
+         this.user_progress_key = 'keongot_user_progress';
+
         this.currentUser = this.loadCurrentUser();
         this.initToastContainer();
     }
 
-    // Load users from localStorage
-    loadUsers() {
-        const users = localStorage.getItem('keongot_users');
-        return users ? JSON.parse(users) : [];
-    }
-
-    // Save users to localStorage
-    saveUsers() {
-        localStorage.setItem('keongot_users', JSON.stringify(this.users));
-    }
 
     // Load current user from localStorage
     loadCurrentUser() {
@@ -76,19 +68,11 @@ class AuthSystem {
     }
 
     // Register new user
-    register(userData) {
+    async register(userData) {
         const { name, password, age } = userData;
-
-        // Check if username already exists
-        const existingUser = this.users.find(user => user.name.toLowerCase() === name.toLowerCase());
-        if (existingUser) {
-            this.showToast('error', 'Đăng ký thất bại!', 'Tên đăng nhập này đã được sử dụng. Vui lòng chọn tên khác.');
-            return false;
-        }
 
         // Create new user
         const newUser = {
-            id: Date.now().toString(),
             name,
             password, // In real app, this should be hashed
             age,
@@ -96,38 +80,149 @@ class AuthSystem {
             avatar: this.generateAvatar(name)
         };
 
-        this.users.push(newUser);
-        this.saveUsers();
+        const registerResponse = await fetch(`${this.apiBase}/auth/register`,{
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newUser)
+        });
+
+        if(!registerResponse.ok){
+            this.showToast('error', 'Đăng ký thất bại!', 'Tên đăng nhập này đã được sử dụng. Vui lòng chọn tên khác.');
+            return false;
+        }
+
+        const registerResponseJson = await registerResponse.json();
+        if(!registerResponseJson.success){
+            this.showToast('error', 'Đăng ký thất bại!', 'Tên đăng nhập này đã được sử dụng. Vui lòng chọn tên khác.');
+            return false;
+        }
+
+        this.currentUser = loginResponseJson.data;
+        saveCurrentUser(registerResponseJson.data);
 
         this.showToast('success', 'Đăng ký thành công! 🎉', `Chào mừng ${name} đến với Kẹo Ngọt! Bạn có thể đăng nhập ngay bây giờ.`);
         return true;
     }
 
     // Login user
-    login(username, password) {
-        const user = this.users.find(u => u.name.toLowerCase() === username.toLowerCase() && u.password === password);
-        
-        if (user) {
-            this.currentUser = user;
-            this.saveCurrentUser(user);
-            this.showToast('success', 'Đăng nhập thành công! 🎉', `Chào mừng trở lại, ${user.name}!`);
-            return true;
-        } else {
-            // Check if username exists
-            const usernameExists = this.users.find(u => u.name.toLowerCase() === username.toLowerCase());
-            if (usernameExists) {
-                this.showToast('error', 'Sai mật khẩu!', 'Mật khẩu không đúng. Vui lòng kiểm tra lại.');
-            } else {
-                this.showToast('warning', 'Tài khoản chưa tồn tại!', 'Tên đăng nhập này chưa được đăng ký. Hãy đăng ký tài khoản mới nhé!');
-            }
+    async login(username, password) {
+
+        const loginResponse = await fetch(`${this.apiBase}/auth/login`,{
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: username,
+                password: password
+            })
+        });
+
+        if(!loginResponse.ok){
+            this.showToast('error', 'Đăng nhập thất bại!', 'Kiểm tra kết nối');
             return false;
         }
+
+        const loginResponseJson = await loginResponse.json();
+        if(!loginResponseJson.success){
+            this.showToast('error', 'Đăng nhập thất bại!', 'Vui lòng kiểm tra lại tài khoản và mật khẩu');
+            return false;
+        }
+
+        this.currentUser = loginResponseJson.data;
+        this.saveCurrentUser(loginResponseJson.data);
+
+        //load process
+        await this.loadUserProcess();
+
+        this.showToast('success', 'Đăng nhập thành công! 🎉', `Chào mừng trở lại!`);
+        return true;
+    }
+
+    // load current from storage
+    loadCurrentUserProgress(){
+        const userProcess = localStorage.getItem(this.user_progress_key);
+        return userProcess ? JSON.parse(userProcess) : null;
+    }
+
+    // save current process to storage
+    saveUserProgress(userProgress){
+        if (userProgress) {
+            localStorage.setItem(this.user_progress_key, JSON.stringify(userProgress));
+        } else {
+            localStorage.removeItem(this.user_progress_key);
+        }
+    }
+
+    // load current process from api
+    async loadUserProcess(){
+        if (this.currentUser === null) {
+            console.log("upload userProgress -> isLoggedIn = false");
+            return false;
+        }
+
+        const Response = await fetch(`${this.apiBase}/userProgress`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.currentUser.token}`
+            }
+        });
+
+        if (!Response.ok) {
+            console.log("upload userProgress -> Server Response Error");
+            return false;
+        }
+
+        const ResponseJson = await Response.json();
+        if (!ResponseJson.success) {
+             console.log("upload userProgress -> Server Response Empty");
+            return false;
+        }
+
+        this.saveUserProgress(ResponseJson.data);
+        return true;
+    }
+
+    // update current process from api
+    async updateuserProgress(UserProgress) {
+        this.saveUserProgress(UserProgress)
+        
+        if (this.currentUser === null) {
+            console.log("upload userProgress -> isLoggedIn = false");
+            return false;
+        }
+
+        const Response = await fetch(`${this.apiBase}/userProgress`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.currentUser.token}`
+            },
+            body: JSON.stringify(UserProgress)
+        });
+
+        if (!Response.ok) {
+            console.log("upload userProgress -> Server Response Error");
+            return false;
+        }
+
+        const ResponseJson = await Response.json();
+        if (!ResponseJson.success) {
+             console.log("upload userProgress -> Server Response Empty");
+            return false;
+        }
+
+        return true;
     }
 
     // Logout user
     logout() {
         this.currentUser = null;
         this.saveCurrentUser(null);
+        this.saveUserProgress(null);
         this.showToast('info', 'Đã đăng xuất!', 'Hẹn gặp lại bạn lần sau nhé! 👋');
     }
 
@@ -174,17 +269,6 @@ class AuthSystem {
             return true;
         }
         return false;
-    }
-
-    // Get user statistics
-    getUserStats() {
-        if (!this.currentUser) return null;
-
-        return {
-            totalUsers: this.users.length,
-            userRank: this.users.findIndex(u => u.id === this.currentUser.id) + 1,
-            daysSinceJoined: Math.floor((new Date() - new Date(this.currentUser.createdAt)) / (1000 * 60 * 60 * 24))
-        };
     }
 
 }

@@ -15,23 +15,28 @@ class AuthSync {
     }
 
     setupAuthSync() {
+
+        
         // Lắng nghe thay đổi trong localStorage
         window.addEventListener('storage', (e) => {
             if (e.key === 'keongot_current_user') {
-                this.updateAllPages();
+                window.location.reload();
             }
         });
-
+         
+        
         // Cập nhật UI khi trang load
         this.updateAllPages();
 
         // Thêm event listener cho logout từ các trang khác
         this.setupLogoutListener();
         
+        /**
         // Cập nhật định kỳ để đảm bảo đồng bộ
         setInterval(() => {
             this.updateAllPages();
         }, 1000);
+        */
     }
 
     updateAllPages() {
@@ -62,6 +67,9 @@ class AuthSync {
                 e.preventDefault();
                 auth.logout();
                 this.updateAllPages();
+
+                //
+                window.location.reload();
             });
         } else {
             // User chưa đăng nhập

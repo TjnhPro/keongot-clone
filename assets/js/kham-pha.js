@@ -85,30 +85,34 @@ class UserProgress {
     }
 
     getData() {
-        return JSON.parse(localStorage.getItem(this.storageKey));
+        return auth.loadCurrentUserProgress();
     }
 
-    updateData(updates) {
+    async updateData(updates) {
         const data = this.getData();
         const newData = { ...data, ...updates, lastActivity: new Date().toISOString() };
-        localStorage.setItem(this.storageKey, JSON.stringify(newData));
+        //localStorage.setItem(this.storageKey, JSON.stringify(newData));
+
+        //auth report
+        await auth.updateuserProgress(newData);
+
         this.updateUI();
     }
 
-    addPoints(points) {
+    async addPoints(points) {
         const data = this.getData();
         const newPoints = data.currentPoints + points;
         const newLevel = Math.floor(newPoints / 500) + 1;
-        this.updateData({
+        await this.updateData({
             currentPoints: newPoints,
             level: newLevel
         });
     }
 
-    addBadge(badgeId) {
+    async addBadge(badgeId) {
         const data = this.getData();
         if (!data.badges.includes(badgeId)) {
-            this.updateData({
+            await this.updateData({
                 badges: [...data.badges, badgeId]
             });
 
@@ -177,7 +181,7 @@ class UserProgress {
         }
     }
 
-    completeQuestionSet(questionSetIndex, score) {
+    async completeQuestionSet(questionSetIndex, score) {
         const data = this.getData();
         const newScores = [...data.questionSetScores];
         newScores[questionSetIndex] = score;
@@ -187,7 +191,7 @@ class UserProgress {
 
         // Check for emotion expert badge on first completion with good score
         if (wasFirstCompletion && score >= 70) {
-            this.addBadge('emotion_expert');
+            await this.addBadge('emotion_expert');
         }
 
         // Count completed sets
@@ -196,7 +200,7 @@ class UserProgress {
         const averageScore = completedScores.length > 0 ?
             completedScores.reduce((a, b) => a + b, 0) / completedScores.length : 0;
 
-        this.updateData({
+        await this.updateData({
             completedQuestionSets: completedCount,
             totalQuestionSetsCompleted: completedCount,
             questionSetScores: newScores,
@@ -205,16 +209,16 @@ class UserProgress {
 
         // Add points based on score
         const points = Math.round(score * 20);
-        this.addPoints(points);
+        await this.addPoints(points);
 
         // Check for badge achievements
         if (completedCount >= 5) {
-            this.addBadge('question_master');
+            await this.addBadge('question_master');
         }
 
         // Check for explorer badge (complete all activities)
         if (data.totalStoriesRead >= 6 && completedCount >= 5) {
-            this.addBadge('explorer');
+            await this.addBadge('explorer');
         }
     }
 
@@ -251,30 +255,30 @@ class UserProgress {
         }
     }
 
-    readStory(storyId) {
+    async readStory(storyId) {
         const data = this.getData();
         if (!data.readStories.includes(storyId)) {
-            this.updateData({
+            await this.updateData({
                 readStories: [...data.readStories, storyId],
                 totalStoriesRead: data.totalStoriesRead + 1
             });
 
             // Add points for reading story
-            this.addPoints(50);
+            await this.addPoints(50);
 
             // Check for badge achievements
             if (data.totalStoriesRead + 1 >= 6) {
-                this.addBadge('bookworm');
+                await this.addBadge('bookworm');
             }
 
             // Check for storyteller badge (read all stories and complete quizzes)
             if (data.totalStoriesRead >= 6 && data.totalQuestionSetsCompleted >= 3) {
-                this.addBadge('storyteller');
+                await this.addBadge('storyteller');
             }
 
             // Check for helper badge (help others by sharing progress)
             if (data.totalStoriesRead >= 4 && data.totalQuestionSetsCompleted >= 2) {
-                this.addBadge('helper');
+                await this.addBadge('helper');
             }
         }
     }
@@ -1259,7 +1263,7 @@ function setupQuestionSetEventListeners() {
     nextQuestionBtn.addEventListener('click', nextQuestionHandler);
 }
 
-function nextQuestionHandler() {
+async function nextQuestionHandler() {
     console.log(`nextQuestionBtn click: ${currentQuestion}`);
     currentQuestion++;
     const currentQuestionSetQuestions = getCurrentQuestionSetQuestions();
@@ -1268,17 +1272,17 @@ function nextQuestionHandler() {
         updateQuestionSetDisplay();
     } else {
         // Question set completed, show results
-        showQuestionSetResults();
+        await showQuestionSetResults();
     }
 }
 
-function showQuestionSetResults() {
+async function showQuestionSetResults() {
     const quizContainer = document.getElementById('quizContainer');
     const currentQuestionSetQuestions = getCurrentQuestionSetQuestions();
     const percentage = Math.round((score / currentQuestionSetQuestions.length) * 100);
 
     // Save question set results to localStorage
-    userProgress.completeQuestionSet(currentQuestionSet, percentage);
+    await userProgress.completeQuestionSet(currentQuestionSet, percentage);
 
     quizContainer.innerHTML = `
                 <div class="quiz-results">
@@ -1500,21 +1504,21 @@ function restartQuestionSet() {
 function initStories() {
     const storyCards = document.querySelectorAll('.story-card');
     storyCards.forEach(card => {
-        card.addEventListener('click', () => {
+        card.addEventListener('click',async () => {
             const storyId = card.getAttribute('data-story');
-            openStory(storyId);
+            await openStory(storyId);
         });
     });
 }
 
-function openStory(storyId) {
+async function openStory(storyId) {
     if (!storyId) {
         console.error('Story ID is required');
         return;
     }
 
     // Save story read to localStorage
-    userProgress.readStory(storyId);
+    await userProgress.readStory(storyId);
 
     const stories = {
         '1': {
@@ -2653,13 +2657,13 @@ function initTopicCards() {
 
             // Add event listeners to story cards
             storiesGrid.querySelectorAll('.story-card').forEach(card => {
-                card.addEventListener('click', () => {
+                card.addEventListener('click', async () => {
                     const storyId = card.getAttribute('data-story');
                     const story = topic.stories.find(s => s.id === storyId);
                     if (story) {
                         showStoryModal(story.title, story.content);
                         // Mark story as read
-                        userProgress.readStory(storyId);
+                        await userProgress.readStory(storyId);
                     }
                 });
             });
